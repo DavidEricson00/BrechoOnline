@@ -5,14 +5,6 @@ Desenvolvimento de um sistema de brechó online com suporte a venda, troca e neg
 
 ---
 
-## 👥 Integrantes
-
-| Nome | Curso |
-|------|-------|
-| ...  | ...   |
-
----
-
 ## 📋 Descrição do Sistema
 
 Plataforma front-end de brechó online que permite anunciar, comprar e trocar roupas usadas.  
@@ -33,10 +25,10 @@ garagem virtual e avaliação entre usuários. Todos os dados são persistidos v
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/seu-repo.git
+git clone https://github.com/DavidEricson00/Brecho-Oline.git
 
 # Acesse a pasta
-cd seu-repo
+cd Brecho-Oline
 
 # Instale as dependências
 npm install
@@ -107,8 +99,6 @@ npm start
 
 ## 📱 Telas Principais
 
-> *(Adicionar screenshots aqui após o desenvolvimento)*
-
 - Tela de Login / Cadastro
 - Home / Explorar Anúncios
 - Detalhe do Anúncio
@@ -117,28 +107,6 @@ npm start
 - Chat da Negociação
 - Garagem Virtual
 - Perfil do Usuário
-
----
-
-## 🧩 Dificuldades Encontradas
-
-> *(Preencher ao longo do desenvolvimento)*
-
----
-
-## 📅 Cronograma
-
-| Semana | Atividades |
-|--------|-----------|
-| 1 | Estrutura do projeto, repositório e componentes iniciais |
-| 2 | Autenticação simulada e persistência no localStorage |
-| 3 | CRUD de anúncios e página Explorar |
-| 4 | Filtros, busca, ordenação e página de detalhe |
-| 5 | Sistema de propostas e lógica de VATs |
-| 6 | Chat, Garagem Virtual e avaliações |
-| 7 | Responsividade, testes, bugs e entrega |
-
----
 
 ## 📬 Entrega
 
