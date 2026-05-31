@@ -14,7 +14,7 @@ export function Header() {
     <header className="main-header">
       <div className="header-container">
         <div className="logo">
-          <Link to="/" className="logo-link">Delta.<span>Desk</span></Link>
+          <Link to="/" className="logo-link">Memória<span>de Armário</span></Link>
         </div>
 
         <nav className="main-nav">
