@@ -1,24 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
 
 export function Negociacoes() {
   const { usuarioLogado } = useAuth();
-  const [propostasRecebidas, setPropostasRecebidas] = useState([]);
-  const [propostasEnviadas, setPropostasEnviadas] = useState([]);
-
-
-  useEffect(() => {
-    const todasNegociacoes = JSON.parse(localStorage.getItem('negociacoes') || '[]');
-    
-
-    const recebidas = todasNegociacoes.filter(n => n.vendedorId === usuarioLogado?.id);
-    
-
-    const enviadas = todasNegociacoes.filter(n => n.compradorId === usuarioLogado?.id);
-
-    setPropostasRecebidas(recebidas);
-    setPropostasEnviadas(enviadas);
-  }, [usuarioLogado]);
+  const todasNegociacoes = JSON.parse(localStorage.getItem('negociacoes') || '[]');
+  const propostasRecebidas = useMemo(
+    () => todasNegociacoes.filter((n) => n.vendedorId === usuarioLogado?.id),
+    [todasNegociacoes, usuarioLogado]
+  );
+  const propostasEnviadas = useMemo(
+    () => todasNegociacoes.filter((n) => n.compradorId === usuarioLogado?.id),
+    [todasNegociacoes, usuarioLogado]
+  );
 
   const handleAtualizarStatus = (idNegocicao, novoStatus) => {
     const todasNegociacoes = JSON.parse(localStorage.getItem('negociacoes') || '[]');
