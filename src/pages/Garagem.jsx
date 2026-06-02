@@ -3,6 +3,36 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { AnuncioCard } from '../components/AnuncioCard';
 
+const STATUS = {
+  DISPONIVEL: 'disponivel',
+  EM_NEGOCIACAO: 'em_negociacao',
+  VENDIDO: 'vendido',
+  TROCADO: 'trocado'
+};
+
+const STATUS_LABELS = {
+  [STATUS.DISPONIVEL]: 'Disponível',
+  [STATUS.EM_NEGOCIACAO]: 'Negociação',
+  [STATUS.VENDIDO]: 'Vendido',
+  [STATUS.TROCADO]: 'Trocado'
+};
+
+function normalizarStatus(status) {
+  const mapa = {
+    Disponível: STATUS.DISPONIVEL,
+    Disponivel: STATUS.DISPONIVEL,
+    disponivel: STATUS.DISPONIVEL,
+    'Em negociação': STATUS.EM_NEGOCIACAO,
+    'Em negociacao': STATUS.EM_NEGOCIACAO,
+    em_negociacao: STATUS.EM_NEGOCIACAO,
+    'Trocado/Vendido': STATUS.VENDIDO,
+    vendido: STATUS.VENDIDO,
+    trocado: STATUS.TROCADO
+  };
+
+  return mapa[status] || status;
+}
+
 export function Garagem() {
   const { usuarioLogado } = useAuth();
   const navigate = useNavigate();
@@ -52,7 +82,7 @@ export function Garagem() {
       const novaLista = anuncios.map((anuncio) => {
         if (anuncio.id === idEdicao) {
           if (anuncio.usuarioId !== usuarioLogado.id) return anuncio;
-          if (anuncio.status !== 'Disponível') {
+          if (normalizarStatus(anuncio.status) !== STATUS.DISPONIVEL) {
             alert('Você só pode editar anúncios que estão na lista Disponível!');
             return anuncio;
           }
@@ -85,7 +115,7 @@ export function Garagem() {
         foto: foto || 'https://via.placeholder.com/600x800?text=Sem+Foto',
         modalidade,
         vats: valorVat,
-        status: 'Disponível',
+        status: STATUS.DISPONIVEL,
         criadoEm: new Date().toISOString()
       };
 
@@ -127,6 +157,27 @@ export function Garagem() {
   };
 
   const meusAnuncios = anuncios.filter((a) => a.usuarioId === usuarioLogado.id);
+  const secoes = [
+    {
+      titulo: 'Disponíveis',
+      filtro: (anuncio) => normalizarStatus(anuncio.status) === STATUS.DISPONIVEL,
+      opcoes: [STATUS.DISPONIVEL]
+    },
+    {
+      titulo: 'Em negociação',
+      filtro: (anuncio) => normalizarStatus(anuncio.status) === STATUS.EM_NEGOCIACAO,
+      opcoes: [STATUS.EM_NEGOCIACAO]
+    },
+    {
+      titulo: 'Histórico',
+      filtro: (anuncio) => {
+        const statusNormalizado = normalizarStatus(anuncio.status);
+        return statusNormalizado === STATUS.VENDIDO || statusNormalizado === STATUS.TROCADO;
+      },
+      opcoes: [STATUS.VENDIDO, STATUS.TROCADO]
+    }
+  ];
+  const statusDisponiveis = [STATUS.DISPONIVEL, STATUS.EM_NEGOCIACAO, STATUS.VENDIDO, STATUS.TROCADO];
 
   return (
     <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
@@ -185,13 +236,13 @@ export function Garagem() {
         </form>
       </div>
 
-      {['Disponível', 'Negociação', 'Trocado/Vendido'].map((aba) => {
-        const itensDaAba = meusAnuncios.filter((a) => a.status === aba);
+      {secoes.map((secao) => {
+        const itensDaAba = meusAnuncios.filter(secao.filtro);
 
         return (
-          <div key={aba} style={{ marginBottom: '2.5rem' }}>
+          <div key={secao.titulo} style={{ marginBottom: '2.5rem' }}>
             <h3 style={{ borderBottom: '2px solid #333', paddingBottom: '0.5rem' }}>
-              Lista: {aba} ({itensDaAba.length})
+              Lista: {secao.titulo} ({itensDaAba.length})
             </h3>
 
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
@@ -203,20 +254,22 @@ export function Garagem() {
                     <AnuncioCard anuncio={anuncio} onClickDetalhe={(id) => navigate(`/anuncio/${id}`)} />
 
                     <div className="garage-actions">
-                      {anuncio.status === 'Disponível' && (
+                      {normalizarStatus(anuncio.status) === STATUS.DISPONIVEL && (
                         <button onClick={() => handleIniciarEdicao(anuncio)} className="garage-action-button garage-action-button--edit">
                           Editar Peça
                         </button>
                       )}
 
                       <select
-                        value={anuncio.status}
+                        value={normalizarStatus(anuncio.status)}
                         onChange={(e) => handleMudarStatus(anuncio.id, e.target.value)}
                         className="garage-status-select"
                       >
-                        <option value="Disponível">Mover p/ Disponível</option>
-                        <option value="Negociação">Mover p/ Negociação</option>
-                        <option value="Trocado/Vendido">Mover p/ Trocado/Vendido</option>
+                        {statusDisponiveis.map((status) => (
+                          <option key={status} value={status}>
+                            Mover p/ {STATUS_LABELS[status]}
+                          </option>
+                        ))}
                       </select>
 
                       <button onClick={() => handleExcluirAnuncio(anuncio.id)} className="garage-action-button garage-action-button--danger">
