@@ -1,34 +1,30 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { anunciosMock } from '../mocks/anuncios';
 
 export function DetalheAnuncio() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { usuarioLogado } = useAuth();
-  const [anuncio, setAnuncio] = useState(null);
-
-
-  useEffect(() => {
-
-    const anunciosSalvos = JSON.parse(localStorage.getItem('anunciosGaragem') || '[]');
-    const itemEncontrado = anunciosSalvos.find(item => item.id === id);
-
-    if (itemEncontrado) {
-      setAnuncio(itemEncontrado);
-    } else {
-
-      setAnuncio({
-        id: id,
+  const anuncio = useMemo(() => {
+    const anunciosSalvos = JSON.parse(localStorage.getItem('anuncios') || '[]');
+    return (
+      [...anunciosSalvos, ...anunciosMock].find((item) => item.id === id) || {
+        id,
         titulo: 'Tênis Running Casual',
         descricao: 'Tênis em ótimo estado, usado poucas vezes. Perfeito para o dia a dia.',
         precoVats: 150,
         donoId: 'outro-usuario-id',
         donoNome: 'Ana Silva',
         foto: 'https://via.placeholder.com/300?text=Tenis+Casual'
-      });
-    }
+      }
+    );
   }, [id]);
+
+  const valorVat = anuncio.vats ?? anuncio.precoVats ?? 0;
+  const donoId = anuncio.donoId ?? anuncio.usuarioId ?? '';
+  const donoNome = anuncio.donoNome ?? 'Usuário da plataforma';
 
   const handleFazerProposta = () => {
     if (!usuarioLogado) {
@@ -37,7 +33,7 @@ export function DetalheAnuncio() {
       return;
     }
 
-    if (anuncio.donoId === usuarioLogado.id) {
+    if (donoId === usuarioLogado.id) {
       alert('Você não pode fazer uma proposta no seu próprio desapego!');
       return;
     }
@@ -49,10 +45,10 @@ export function DetalheAnuncio() {
       id: crypto.randomUUID(),
       anuncioId: anuncio.id,
       tituloAnuncio: anuncio.titulo,
-      precoOriginal: anuncio.precoVats,
+      precoOriginal: valorVat,
       compradorId: usuarioLogado.id,
       compradorNome: usuarioLogado.nome,
-      vendedorId: anuncio.donoId,
+      vendedorId: donoId,
       status: 'ABERTA'
     };
 
@@ -63,8 +59,6 @@ export function DetalheAnuncio() {
     navigate('/minhas-negociacoes');
   };
 
-  if (!anuncio) return <p style={{ textAlign: 'center', padding: '2rem' }}>Carregando desapego...</p>;
-
   return (
     <div style={{ maxWidth: '600px', margin: '2rem auto', padding: '1.5rem', background: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
       <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: '#fc9003', cursor: 'pointer', fontWeight: 'bold', marginBottom: '1rem' }}>
@@ -74,10 +68,10 @@ export function DetalheAnuncio() {
       <img src={anuncio.foto} alt={anuncio.titulo} style={{ width: '100%', height: '300px', objectFit: 'cover', borderRadius: '8px' }} />
       
       <h2 style={{ marginTop: '1rem', color: '#333' }}>{anuncio.titulo}</h2>
-      <p style={{ color: '#666', fontSize: '0.9rem' }}>Desapego de: <strong>{anuncio.donoNome}</strong></p>
+      <p style={{ color: '#666', fontSize: '0.9rem' }}>Desapego de: <strong>{donoNome}</strong></p>
       
       <div style={{ margin: '1rem 0', padding: '0.8rem', background: 'rgba(252, 144, 3, 0.1)', borderRadius: '4px', display: 'inline-block' }}>
-        <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#fc9003' }}>{anuncio.precoVats} VATs</span>
+        <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#fc9003' }}>{valorVat} VATs</span>
       </div>
 
       <p style={{ lineHeight: '1.6', color: '#444', margin: '1rem 0' }}>{anuncio.descricao}</p>
