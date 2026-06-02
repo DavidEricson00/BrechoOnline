@@ -2,10 +2,22 @@ import { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
 
+const removerCamposDerivados = (usuario) => {
+  if (!usuario) return usuario;
+
+  const { mediaAvaliacoes, totalNegociacoes, saldoVats, ...resto } = usuario;
+
+  if (typeof resto.vats !== 'number' && typeof saldoVats === 'number') {
+    resto.vats = saldoVats;
+  }
+
+  return resto;
+};
+
 export function AuthProvider({ children }) {
   const [usuarioLogado, setUsuarioLogado] = useState(() => {
     const usuarioSalvo = localStorage.getItem('usuarioLogado');
-    return usuarioSalvo ? JSON.parse(usuarioSalvo) : null;
+    return usuarioSalvo ? removerCamposDerivados(JSON.parse(usuarioSalvo)) : null;
   });
 
 
@@ -14,8 +26,9 @@ export function AuthProvider({ children }) {
     const usuarioEncontrado = usuariosSalvos.find(u => u.email === email && u.senha === senha);
 
     if (usuarioEncontrado) {
-      localStorage.setItem('usuarioLogado', JSON.stringify(usuarioEncontrado));
-      setUsuarioLogado(usuarioEncontrado);
+      const usuarioSanitizado = removerCamposDerivados(usuarioEncontrado);
+      localStorage.setItem('usuarioLogado', JSON.stringify(usuarioSanitizado));
+      setUsuarioLogado(usuarioSanitizado);
       return true;
     }
     return false;
@@ -37,7 +50,7 @@ export function AuthProvider({ children }) {
       telefone: dadosUsuario.telefone,
       endereco: dadosUsuario.endereco,
       avatar: dadosUsuario.avatar || null,
-      saldoVats: 100,
+      vats: 100,
       criadoEm: new Date().toISOString()
     };
 
@@ -51,12 +64,12 @@ export function AuthProvider({ children }) {
     const index = usuariosSalvos.findIndex(u => u.id === id);
     if (index === -1) return false;
 
-    const atualizado = { ...usuariosSalvos[index], ...updates };
+    const atualizado = removerCamposDerivados({ ...usuariosSalvos[index], ...updates });
     usuariosSalvos[index] = atualizado;
     localStorage.setItem('usuarios', JSON.stringify(usuariosSalvos));
 
     if (usuarioLogado && usuarioLogado.id === id) {
-      const merged = { ...usuarioLogado, ...updates };
+      const merged = removerCamposDerivados({ ...usuarioLogado, ...updates });
       localStorage.setItem('usuarioLogado', JSON.stringify(merged));
       setUsuarioLogado(merged);
     }

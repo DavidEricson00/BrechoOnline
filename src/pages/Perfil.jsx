@@ -5,6 +5,7 @@ import { useState, useMemo } from 'react';
 export function Perfil() {
   const { usuarioLogado, logout, updateProfile } = useAuth();
   const navigate = useNavigate();
+  const vatsUsuario = usuarioLogado?.vats ?? usuarioLogado?.saldoVats ?? 0;
 
   const [editMode, setEditMode] = useState(false);
   const [nome, setNome] = useState('');
@@ -190,7 +191,7 @@ export function Perfil() {
           <section style={{ background: 'linear-gradient(180deg, #111827 0%, #1f2937 100%)', color: '#fff', borderRadius: '18px', padding: '1.25rem', boxShadow: '0 10px 28px rgba(0,0,0,0.12)' }}>
             <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Minha carteira</h3>
             <p style={{ margin: '0.35rem 0 0.95rem', color: 'rgba(255,255,255,0.75)' }}>Seu saldo disponível para compras e propostas.</p>
-            <div style={{ fontSize: '2rem', fontWeight: 900, lineHeight: 1 }}>{usuarioLogado.saldoVats} VATs</div>
+            <div style={{ fontSize: '2rem', fontWeight: 900, lineHeight: 1 }}>{vatsUsuario} VATs</div>
             <a href="#" onClick={(e) => e.preventDefault()} style={{ display: 'inline-flex', marginTop: '1rem', padding: '0.75rem 1rem', background: '#fc9003', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 800 }}>Comprar VATs</a>
           </section>
 
