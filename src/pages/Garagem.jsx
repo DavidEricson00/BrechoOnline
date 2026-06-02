@@ -1,22 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { AnuncioCard } from '../components/AnuncioCard';
 
 export function Garagem() {
   const { usuarioLogado } = useAuth();
-  const [anuncios, setAnuncios] = useState(() => {
-    const salvos = localStorage.getItem('anuncios');
-    return salvos ? JSON.parse(salvos) : [];
-  });
-  const [idEdicao, setIdEdicao] = useState(null);
-  const [titulo, setTitulo] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [categoria, setCategoria] = useState('camisa');
-  const [tamanho, setTamanho] = useState('M');
-  const [conservacao, setConservacao] = useState('Bom');
-  const [foto, setFoto] = useState('');
-  const [modalidade, setModalidade] = useState('Venda');
-  const [vats, setVats] = useState('');
+  const navigate = useNavigate();
+  const anunciosPersistidos = JSON.parse(localStorage.getItem('anuncios') || '[]');
+  const anuncioIdEdicao = localStorage.getItem('editarAnuncioId');
+  const anuncioParaEdicaoInicial = anuncioIdEdicao
+    ? anunciosPersistidos.find((item) => item.id === anuncioIdEdicao && item.usuarioId === usuarioLogado.id)
+    : null;
+  const [anuncios, setAnuncios] = useState(() => anunciosPersistidos);
+  const [idEdicao, setIdEdicao] = useState(() => anuncioParaEdicaoInicial?.id || null);
+  const [titulo, setTitulo] = useState(() => anuncioParaEdicaoInicial?.titulo || '');
+  const [descricao, setDescricao] = useState(() => anuncioParaEdicaoInicial?.descricao || '');
+  const [categoria, setCategoria] = useState(() => anuncioParaEdicaoInicial?.categoria || 'camisa');
+  const [tamanho, setTamanho] = useState(() => anuncioParaEdicaoInicial?.tamanho || 'M');
+  const [conservacao, setConservacao] = useState(() => anuncioParaEdicaoInicial?.conservacao || 'Bom');
+  const [foto, setFoto] = useState(() => anuncioParaEdicaoInicial?.foto || '');
+  const [modalidade, setModalidade] = useState(() => anuncioParaEdicaoInicial?.modalidade || 'Venda');
+  const [vats, setVats] = useState(() => (anuncioParaEdicaoInicial ? anuncioParaEdicaoInicial.vats.toString() : ''));
 
   const salvarNoStorage = (novaLista) => {
     setAnuncios(novaLista);
@@ -104,6 +108,12 @@ export function Garagem() {
     setVats(anuncio.vats.toString());
   };
 
+  useEffect(() => {
+    if (anuncioParaEdicaoInicial) {
+      localStorage.removeItem('editarAnuncioId');
+    }
+  }, [anuncioParaEdicaoInicial]);
+
   const handleExcluirAnuncio = (id) => {
     if (window.confirm('Tem certeza que deseja excluir permanentemente este anúncio?')) {
       const novaLista = anuncios.filter((a) => a.id !== id);
@@ -166,11 +176,11 @@ export function Garagem() {
             <input type="number" placeholder="Valor em VATs" required value={vats} onChange={(e) => setVats(e.target.value)} className="field-control" style={{ flex: 1 }} />
           </div>
 
-          <div>
+          <div style={{ display: 'flex', gap: '1rem' }}>
             <button type="submit" style={{ padding: '0.6rem 2rem', cursor: 'pointer', background: '#28a745', color: '#fff', border: 'none', borderRadius: '4px' }}>
               {idEdicao ? 'Atualizar' : 'Publicar Peça'}
             </button>
-            {idEdicao && <button type="button" onClick={limparFormulario} style={{ marginLeft: '1rem' }}>Cancelar</button>}
+            {idEdicao && <button type="button" onClick={limparFormulario} style={{ padding: '0.6rem 2rem', cursor: 'pointer', background: '#d1d1d1', color: '#3c3c3c', border: 'none', borderRadius: '4px' }}>Cancelar</button>}
           </div>
         </form>
       </div>
@@ -190,11 +200,11 @@ export function Garagem() {
               ) : (
                 itensDaAba.map((anuncio) => (
                   <div key={anuncio.id} style={{ width: '260px' }}>
-                    <AnuncioCard anuncio={anuncio} />
+                    <AnuncioCard anuncio={anuncio} onClickDetalhe={(id) => navigate(`/anuncio/${id}`)} />
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', marginTop: '10px' }}>
+                    <div className="garage-actions">
                       {anuncio.status === 'Disponível' && (
-                        <button onClick={() => handleIniciarEdicao(anuncio)} style={{ fontSize: '0.8rem', cursor: 'pointer' }}>
+                        <button onClick={() => handleIniciarEdicao(anuncio)} className="garage-action-button garage-action-button--edit">
                           Editar Peça
                         </button>
                       )}
@@ -202,14 +212,14 @@ export function Garagem() {
                       <select
                         value={anuncio.status}
                         onChange={(e) => handleMudarStatus(anuncio.id, e.target.value)}
-                        style={{ fontSize: '0.8rem', padding: '2px' }}
+                        className="garage-status-select"
                       >
                         <option value="Disponível">Mover p/ Disponível</option>
                         <option value="Negociação">Mover p/ Negociação</option>
                         <option value="Trocado/Vendido">Mover p/ Trocado/Vendido</option>
                       </select>
 
-                      <button onClick={() => handleExcluirAnuncio(anuncio.id)} style={{ fontSize: '0.8rem', color: 'red', cursor: 'pointer' }}>
+                      <button onClick={() => handleExcluirAnuncio(anuncio.id)} className="garage-action-button garage-action-button--danger">
                         Excluir
                       </button>
                     </div>

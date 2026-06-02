@@ -275,6 +275,74 @@ body {
     background: #dc2626 !important;
 }
 
+.garage-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    margin-top: 0.75rem;
+}
+
+.garage-action-button {
+    border: 1px solid #dbe3ee;
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.86rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    color: #0f172a;
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
+}
+
+.garage-action-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px -12px rgba(15, 23, 42, 0.25);
+}
+
+.garage-action-button--edit {
+    border-color: #cbd5e1;
+}
+
+.garage-action-button--edit:hover {
+    border-color: #94a3b8;
+    background: linear-gradient(180deg, #ffffff 0%, #eef6ff 100%);
+}
+
+.garage-action-button--danger {
+    border-color: #fecaca;
+    color: #b91c1c;
+}
+
+.garage-action-button--danger:hover {
+    border-color: #fca5a5;
+    background: linear-gradient(180deg, #ffffff 0%, #fff1f2 100%);
+    color: #991b1b;
+}
+
+.garage-status-select {
+    width: 100%;
+    min-height: 42px;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    color: #334155;
+    background-color: #fff;
+    font-size: 0.86rem;
+    font-weight: 600;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.garage-status-select:hover {
+    border-color: #94a3b8;
+}
+
+.garage-status-select:focus {
+    outline: none;
+    border-color: #06b6d4;
+    box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.14);
+}
+
 .page-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
