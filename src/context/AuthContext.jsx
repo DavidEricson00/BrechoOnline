@@ -1,19 +1,12 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [usuarioLogado, setUsuarioLogado] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-
-  useEffect(() => {
+  const [usuarioLogado, setUsuarioLogado] = useState(() => {
     const usuarioSalvo = localStorage.getItem('usuarioLogado');
-    if (usuarioSalvo) {
-      setUsuarioLogado(JSON.parse(usuarioSalvo));
-    }
-    setLoading(false);
-  }, []);
+    return usuarioSalvo ? JSON.parse(usuarioSalvo) : null;
+  });
 
 
   const login = (email, senha) => {
@@ -63,12 +56,13 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{ usuarioLogado, login, cadastrar, logout }}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 }
 
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   return useContext(AuthContext);
 }
