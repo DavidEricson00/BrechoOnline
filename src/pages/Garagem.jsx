@@ -126,18 +126,18 @@ export function Garagem() {
       <div style={{ background: '#f9f9f9', padding: '1.5rem', borderRadius: '8px', marginBottom: '2rem', border: '1px solid #ddd' }}>
         <h3>{idEdicao ? 'Editar Anúncio' : 'Anunciar Nova Peça'}</h3>
         <form onSubmit={handleSalvarAnuncio} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <input type="text" placeholder="Título do anúncio" required value={titulo} onChange={(e) => setTitulo(e.target.value)} />
-          <textarea placeholder="Descrição da roupa/acessório" required value={descricao} onChange={(e) => setDescricao(e.target.value)} />
+          <input type="text" placeholder="Título do anúncio" required value={titulo} onChange={(e) => setTitulo(e.target.value)} className="field-control" />
+          <textarea placeholder="Descrição da roupa/acessório" required value={descricao} onChange={(e) => setDescricao(e.target.value)} className="field-control field-control--textarea" />
 
           <div style={{ display: 'flex', gap: '1rem' }}>
-            <select value={categoria} onChange={(e) => setCategoria(e.target.value)} style={{ flex: 1 }}>
+            <select value={categoria} onChange={(e) => setCategoria(e.target.value)} className="field-control field-control--select" style={{ flex: 1 }}>
               <option value="camisa">Camisa</option>
               <option value="calça">Calça</option>
               <option value="calçado">Calçado</option>
               <option value="acessório">Acessório</option>
             </select>
 
-            <select value={tamanho} onChange={(e) => setTamanho(e.target.value)} style={{ flex: 1 }}>
+            <select value={tamanho} onChange={(e) => setTamanho(e.target.value)} className="field-control field-control--select" style={{ flex: 1 }}>
               <option value="PP">PP</option>
               <option value="P">P</option>
               <option value="M">M</option>
@@ -147,14 +147,14 @@ export function Garagem() {
           </div>
 
           <div style={{ display: 'flex', gap: '1rem' }}>
-            <select value={conservacao} onChange={(e) => setConservacao(e.target.value)} style={{ flex: 1 }}>
+            <select value={conservacao} onChange={(e) => setConservacao(e.target.value)} className="field-control field-control--select" style={{ flex: 1 }}>
               <option value="Novo">Novo</option>
               <option value="Bom">Bom</option>
               <option value="Regular">Regular</option>
               <option value="Marcas de uso">Marcas de uso</option>
             </select>
 
-            <select value={modalidade} onChange={(e) => setModalidade(e.target.value)} style={{ flex: 1 }}>
+            <select value={modalidade} onChange={(e) => setModalidade(e.target.value)} className="field-control field-control--select" style={{ flex: 1 }}>
               <option value="Venda">Venda</option>
               <option value="Troca">Troca</option>
               <option value="Ambos">Ambos (Venda e Troca)</option>
@@ -162,8 +162,8 @@ export function Garagem() {
           </div>
 
           <div style={{ display: 'flex', gap: '1rem' }}>
-            <input type="url" placeholder="URL da foto do item" value={foto} onChange={(e) => setFoto(e.target.value)} style={{ flex: 2 }} />
-            <input type="number" placeholder="Valor em VATs" required value={vats} onChange={(e) => setVats(e.target.value)} style={{ flex: 1 }} />
+            <input type="url" placeholder="URL da foto do item" value={foto} onChange={(e) => setFoto(e.target.value)} className="field-control" style={{ flex: 2 }} />
+            <input type="number" placeholder="Valor em VATs" required value={vats} onChange={(e) => setVats(e.target.value)} className="field-control" style={{ flex: 1 }} />
           </div>
 
           <div>

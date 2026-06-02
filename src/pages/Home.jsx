@@ -96,25 +96,26 @@ export function Home() {
             <input
               type="text"
               placeholder="Pesquisar por título ou descrição"
+              className="field-control"
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
             />
 
-            <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
+            <select value={categoria} onChange={(e) => setCategoria(e.target.value)} className="field-control field-control--select">
               <option value="">Categoria</option>
               {categorias.filter(Boolean).map((item) => (
                 <option key={item} value={item}>{item}</option>
               ))}
             </select>
 
-            <select value={tamanho} onChange={(e) => setTamanho(e.target.value)}>
+            <select value={tamanho} onChange={(e) => setTamanho(e.target.value)} className="field-control field-control--select">
               <option value="">Tamanho</option>
               {tamanhos.filter(Boolean).map((item) => (
                 <option key={item} value={item}>{item}</option>
               ))}
             </select>
 
-            <select value={modalidade} onChange={(e) => setModalidade(e.target.value)}>
+            <select value={modalidade} onChange={(e) => setModalidade(e.target.value)} className="field-control field-control--select">
               <option value="">Modalidade</option>
               {modalidades.filter(Boolean).map((item) => (
                 <option key={item} value={item}>{item}</option>
@@ -124,11 +125,11 @@ export function Home() {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: '0.85rem', marginTop: '0.85rem', alignItems: 'center' }}>
             <div style={{ display: 'flex', gap: '0.6rem' }}>
-              <input type="number" min="0" placeholder="VAT mínimo" value={vatMin} onChange={(e) => setVatMin(e.target.value)} />
-              <input type="number" min="0" placeholder="VAT máximo" value={vatMax} onChange={(e) => setVatMax(e.target.value)} />
+              <input type="number" min="0" placeholder="VAT mínimo" value={vatMin} onChange={(e) => setVatMin(e.target.value)} className="field-control field-control--compact" />
+              <input type="number" min="0" placeholder="VAT máximo" value={vatMax} onChange={(e) => setVatMax(e.target.value)} className="field-control field-control--compact" />
             </div>
 
-            <select value={ordenacao} onChange={(e) => setOrdenacao(e.target.value)}>
+            <select value={ordenacao} onChange={(e) => setOrdenacao(e.target.value)} className="field-control field-control--select field-control--compact">
               {ordenacoes.map((item) => (
                 <option key={item.value || 'padrao'} value={item.value}>{item.label}</option>
               ))}
