@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useNavigate} from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import {useNavigate} from 'react-router-dom';
+import { useAuth  } from '../context/AuthContext';
 
-export function Deposito() {
+export function Saque() {
 
     const navigate = useNavigate()
     const {usuarioLogado} = useAuth()
@@ -13,9 +13,9 @@ export function Deposito() {
     const [valor, setValor] = useState(0)
     const [alerta, setAlerta] = useState('')
 
-    function handleDeposito(){
-            if(valor>0){
-                usuarioLogado.vats+= valor
+    function handleSaque(){
+            if(valor>0 && valor <= usuarioLogado.vats){
+                usuarioLogado.vats -= valor
                 
                 let usuariosAtualizado = usuarios.map((u) => 
                     u.id == usuarioLogado.id ? {...u, vats: usuarioLogado.vats} : u)
@@ -25,14 +25,17 @@ export function Deposito() {
                 setAlerta("Estamos processando sua transação...")
                 navigate("/perfil")
             } else {
-                setAlerta('Por favor, insira um valor maior que 0')
+                setAlerta('Por favor, insira um número válido')
             }
+
+            
+        
 
     }
 
     return(
         <>
-        <h1>Realizar Depósito</h1>
+        <h1>Realizar Saque</h1>
         <br />
         
 
@@ -45,7 +48,7 @@ export function Deposito() {
         
         <br />
         <button onClick={() => navigate(-1)}> Voltar </button>
-        <button onClick={() => handleDeposito()}> Confirmar </button>
+        <button onClick={() => handleSaque()}> Confirmar </button>
 
     
     </>        
