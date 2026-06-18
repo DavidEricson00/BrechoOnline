@@ -1,24 +1,33 @@
 import { useState } from 'react';
 import {Link, useNavigate} from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth,  } from '../context/AuthContext';
 
 export function Deposito() {
 
     const navigate = useNavigate()
     const {usuarioLogado} = useAuth()
+    const usuarios = JSON.parse(localStorage.getItem("usuarios"))
+ //[{},{}] 
+    
 
     const [valor, setValor] = useState(0)
     const [alerta, setAlerta] = useState('')
 
-    async function handleDeposito(){
+    function handleDeposito(){
             if(valor>0){
                 usuarioLogado.vats+= valor
+                
+                let usuariosAtualizado = usuarios.map((u) => 
+                    u.id == usuarioLogado.id ? {...u, vats: usuarioLogado.vats} : u)
+                
+                localStorage.setItem("usuarios", JSON.stringify(usuariosAtualizado))
+
                 setAlerta("Estamos processando sua compra...")
                 navigate("/perfil")
             } else {
                 setAlerta('Por favor, insira um valor maior que 0')
             }
-            console.log(usuarioLogado.vats)
+
             
         
 

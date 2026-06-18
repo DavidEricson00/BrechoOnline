@@ -108,6 +108,7 @@ export function Perfil() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'stretch' }}>
             <a href="#" onClick={() => navigate("/Deposito")} style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', minWidth: 140, padding: '0.8rem 1rem', borderRadius: 12, background: '#111827', color: '#fff', textDecoration: 'none', fontWeight: 700 }}>Comprar VATs</a>
+            <a href="#" onClick={() => navigate("/Deposito")} style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', minWidth: 140, padding: '0.8rem 1rem', borderRadius: 12, background: '#111827', color: '#fff', textDecoration: 'none', fontWeight: 700 }}>Saque</a>
             <button onClick={handleAlternarEdicao} style={{ background: '#fff', border: '1px solid #ddd', padding: '0.8rem 1rem', cursor: 'pointer', borderRadius: 12, fontWeight: 700 }}>{editMode ? 'Fechar edição' : 'Editar perfil'}</button>
           </div>
         </div>
