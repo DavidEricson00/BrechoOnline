@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { anunciosMock } from '../mocks/anuncios';
+//import { anunciosMock } from '../mocks/anuncios';
 
 export function DetalheAnuncio() {
   const { id } = useParams();
@@ -10,7 +10,7 @@ export function DetalheAnuncio() {
   const anunciosSalvos = useMemo(() => JSON.parse(localStorage.getItem('anuncios') || '[]'), []);
   const anuncio = useMemo(() => {
     return (
-      [...anunciosSalvos, ...anunciosMock].find((item) => item.id === id) || {
+      [...anunciosSalvos].find((item) => item.id === id) || {
         id: null
       }
     );
