@@ -41,11 +41,18 @@ export function Deposito() {
         <div>{alerta}</div>
     </div>
 
-        <button onClick={() => setValor(valor+1)}>+1</button> <button onClick={() => setValor(valor+5)}>+5</button> <button onClick={() => setValor(valor+10)}>+10</button> <button onClick={() => setValor(valor+50)}>+50</button> <button onClick={() => setValor(valor+100)}>+100</button>
+        <button onClick={() => setValor(valor+1)} style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', minWidth: 140, padding: '0.8rem 1rem', borderRadius: 12, background: '#111827', color: '#fff', textDecoration: 'none', fontWeight: 700 }}>+1</button> 
+        <button onClick={() => setValor(valor+5)} style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', minWidth: 140, padding: '0.8rem 1rem', borderRadius: 12, background: '#111827', color: '#fff', textDecoration: 'none', fontWeight: 700 }}>+5</button> 
+        <button onClick={() => setValor(valor+10)} style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', minWidth: 140, padding: '0.8rem 1rem', borderRadius: 12, background: '#111827', color: '#fff', textDecoration: 'none', fontWeight: 700 }}>+10</button>
+         <button onClick={() => setValor(valor+50)} style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', minWidth: 140, padding: '0.8rem 1rem', borderRadius: 12, background: '#111827', color: '#fff', textDecoration: 'none', fontWeight: 700 }}>+50</button> 
+         <button onClick={() => setValor(valor+100)} style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', minWidth: 140, padding: '0.8rem 1rem', borderRadius: 12, background: '#111827', color: '#fff', textDecoration: 'none', fontWeight: 700 }}>+100</button>
         
         <br />
-        <button onClick={() => navigate(-1)}> Voltar </button>
-        <button onClick={() => handleDeposito()}> Confirmar </button>
+        <div style={{display:"flex", justifyItems: "center"}}>
+        <button onClick={() => navigate(-1)} style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', minWidth: 140, padding: '0.8rem 1rem', borderRadius: 12, background: '#111827', color: '#fff', textDecoration: 'none', fontWeight: 700 }}> Voltar </button>
+        <button onClick={() => handleDeposito()} style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', minWidth: 140, padding: '0.8rem 1rem', borderRadius: 12, background: '#111827', color: '#fff', textDecoration: 'none', fontWeight: 700 }}> Confirmar </button>
+        </div>
+    
 
     
     </>        
