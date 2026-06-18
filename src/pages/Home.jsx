@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnuncioCard } from '../components/AnuncioCard';
-import { anunciosMock } from '../mocks/anuncios';
+//import { anunciosMock } from '../mocks/anuncios';
 
 const categorias = ['', 'camisa', 'calça', 'calçado', 'acessório'];
 const tamanhos = ['', 'PP', 'P', 'M', 'G', 'GG'];
@@ -12,6 +12,9 @@ const ordenacoes = [
   { value: 'maior-vat', label: 'Maior VAT' },
   { value: 'recentes', label: 'Mais recentes' }
 ];
+
+const anunciosStorage = JSON.parse(localStorage.getItem("anuncios"))
+const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"))
 
 function extrairFaixa(valor) {
   if (!valor) return null;
@@ -52,8 +55,8 @@ export function Home() {
     const min = extrairFaixa(vatMin);
     const max = extrairFaixa(vatMax);
 
-    const base = anunciosMock.filter((anuncio) => {
-      if (anuncio.status !== 'Disponível') return false;
+    const base = anunciosStorage.filter((anuncio) => {
+      if (anuncio.status !== 'disponivel' || anuncio.usuarioId == usuarioLogado.id) return false;
 
       if (textoBusca) {
         const titulo = normalizarTexto(anuncio.titulo);
