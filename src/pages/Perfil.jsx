@@ -1,5 +1,5 @@
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link} from 'react-router-dom';
 import { useState, useMemo } from 'react';
 
 export function Perfil() {
@@ -107,7 +107,7 @@ export function Perfil() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'stretch' }}>
-            <a href="#" onClick={(e) => e.preventDefault()} style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', minWidth: 140, padding: '0.8rem 1rem', borderRadius: 12, background: '#111827', color: '#fff', textDecoration: 'none', fontWeight: 700 }}>Comprar VATs</a>
+            <a href="#" onClick={() => navigate("/Deposito")} style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', minWidth: 140, padding: '0.8rem 1rem', borderRadius: 12, background: '#111827', color: '#fff', textDecoration: 'none', fontWeight: 700 }}>Comprar VATs</a>
             <button onClick={handleAlternarEdicao} style={{ background: '#fff', border: '1px solid #ddd', padding: '0.8rem 1rem', cursor: 'pointer', borderRadius: 12, fontWeight: 700 }}>{editMode ? 'Fechar edição' : 'Editar perfil'}</button>
           </div>
         </div>
@@ -192,7 +192,7 @@ export function Perfil() {
             <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Minha carteira</h3>
             <p style={{ margin: '0.35rem 0 0.95rem', color: 'rgba(255,255,255,0.75)' }}>Seu saldo disponível para compras e propostas.</p>
             <div style={{ fontSize: '2rem', fontWeight: 900, lineHeight: 1 }}>{vatsUsuario} VATs</div>
-            <a href="#" onClick={(e) => e.preventDefault()} style={{ display: 'inline-flex', marginTop: '1rem', padding: '0.75rem 1rem', background: '#fc9003', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 800 }}>Comprar VATs</a>
+            <Link to="/Deposito" style={{ display: 'inline-flex', marginTop: '1rem', padding: '0.75rem 1rem', background: '#fc9003', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 800 }}>Comprar VATs</Link>
           </section>
 
           <button onClick={() => navigate('/garagem')} style={{ padding: '0.9rem 1rem', background: '#fff', border: '1px solid #ddd', borderRadius: 12, fontWeight: 800, cursor: 'pointer' }}>Ir para Minha Garagem</button>
