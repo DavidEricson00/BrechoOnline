@@ -62,7 +62,10 @@ export function DetalheAnuncio() {
 
   useEffect(() => {
     if (negociacaoIdQuery) {
-      setExpandedId(negociacaoIdQuery);
+      if (expandedId !== negociacaoIdQuery) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setExpandedId(negociacaoIdQuery);
+      }
       const contrapropostaQuery = searchParams.get('contraproposta');
       if (contrapropostaQuery && todasNegociacoes.length > 0 && todasPropostas.length > 0 && usuarioLogado) {
         const neg = todasNegociacoes.find(n => n.id === negociacaoIdQuery);
@@ -73,7 +76,7 @@ export function DetalheAnuncio() {
             if (neg.tipo === 'venda') {
               setContraValor(activeProposal.valorVats || (anuncio.vats ?? 0));
             } else {
-              setContraPecas([]);
+              setContraPecas(activeProposal.pecasOferecidas || []);
               setContraComplemento(activeProposal.complementoVats || 0);
             }
             setShowContraModal(true);
@@ -81,7 +84,7 @@ export function DetalheAnuncio() {
         }
       }
     }
-  }, [negociacaoIdQuery, searchParams, todasNegociacoes, todasPropostas, usuarioLogado, anuncio]);
+  }, [negociacaoIdQuery, searchParams, todasNegociacoes, todasPropostas, usuarioLogado, anuncio, expandedId]);
 
   if (!anuncio?.id) {
     return (
@@ -355,6 +358,7 @@ export function DetalheAnuncio() {
     const nIdx = negociacoes.findIndex(neg => neg.id === n.id);
     if (nIdx !== -1) {
       negociacoes[nIdx].status = 'em_andamento';
+      negociacoes[nIdx].tipo = tipoProposta;
       localStorage.setItem('negociacoes', JSON.stringify(negociacoes));
     }
 
@@ -391,8 +395,11 @@ export function DetalheAnuncio() {
         expiradoEm: null
       };
       negociacoes.push(negociacao);
-      localStorage.setItem('negociacoes', JSON.stringify(negociacoes));
+    } else {
+      negociacao.tipo = 'venda';
+      negociacao.status = 'em_andamento';
     }
+    localStorage.setItem('negociacoes', JSON.stringify(negociacoes));
 
     const propostas = JSON.parse(localStorage.getItem('propostas') || '[]');
     propostas.forEach(pr => {
@@ -452,8 +459,11 @@ export function DetalheAnuncio() {
         expiradoEm: null
       };
       negociacoes.push(negociacao);
-      localStorage.setItem('negociacoes', JSON.stringify(negociacoes));
+    } else {
+      negociacao.tipo = 'troca';
+      negociacao.status = 'em_andamento';
     }
+    localStorage.setItem('negociacoes', JSON.stringify(negociacoes));
 
     const propostas = JSON.parse(localStorage.getItem('propostas') || '[]');
     propostas.forEach(pr => {
@@ -826,7 +836,7 @@ export function DetalheAnuncio() {
                                               if (n.tipo === 'venda') {
                                                 setContraValor(activeProposal.valorVats || valorVat);
                                               } else {
-                                                setContraPecas([]);
+                                                setContraPecas(activeProposal.pecasOferecidas || []);
                                                 setContraComplemento(activeProposal.complementoVats || 0);
                                               }
                                               setErrorMsg('');
