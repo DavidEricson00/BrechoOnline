@@ -5,6 +5,7 @@ const AuthContext = createContext();
 const removerCamposDerivados = (usuario) => {
   if (!usuario) return usuario;
 
+  // eslint-disable-next-line no-unused-vars
   const { mediaAvaliacoes, totalNegociacoes, saldoVats, ...resto } = usuario;
 
   if (typeof resto.vats !== 'number' && typeof saldoVats === 'number') {
