@@ -576,17 +576,17 @@ export function DetalheAnuncio() {
                       const isComprador = pr.autorId === n.compradorId;
                       const autorLabel = isComprador ? 'Comprador (Proposta)' : 'Vendedor (Contraproposta)';
                       const timestamp = new Date(pr.criadoEm).toLocaleString();
-                      
+
                       const conteudoProposta = pr.tipo === 'venda'
                         ? `Valor: ${pr.valorVats} VATs`
                         : (() => {
-                            const pecasList = pr.pecasOferecidas || [];
-                            const titulos = pecasList.map(pId => {
-                              const item = anunciosSalvos.find(a => a.id === pId);
-                              return item ? item.titulo : 'Peça Indisponível';
-                            }).join(', ');
-                            return `Peças: [${titulos}] + Complemento: ${pr.complementoVats || 0} VATs`;
-                          })();
+                          const pecasList = pr.pecasOferecidas || [];
+                          const titulos = pecasList.map(pId => {
+                            const item = anunciosSalvos.find(a => a.id === pId);
+                            return item ? item.titulo : 'Peça Indisponível';
+                          }).join(', ');
+                          return `Peças: [${titulos}] + Complemento: ${pr.complementoVats || 0} VATs`;
+                        })();
 
                       return (
                         <div key={pr.id} style={{ display: 'flex', flexDirection: 'column', padding: '0.5rem 0.75rem', background: '#ffffff', borderRadius: '6px', border: '1px solid #e2e8f0', fontSize: '0.85rem' }}>
@@ -735,160 +735,160 @@ export function DetalheAnuncio() {
               );
             }
           } else {
-              // VENDEDOR (DONO) VIEW
-              return (
-                <div>
-                  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '2rem', marginTop: '1.5rem' }}>
-                    <button
-                      onClick={handleEditar}
-                      style={{ flex: '1 1 180px', padding: '0.9rem 1.1rem', background: '#0f172a', color: '#fff', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: 700, cursor: 'pointer' }}
-                    >
-                      Editar Anúncio
-                    </button>
-                    <button
-                      onClick={handleExcluir}
-                      style={{ flex: '1 1 180px', padding: '0.9rem 1.1rem', background: '#dc2626', color: '#fff', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: 700, cursor: 'pointer' }}
-                    >
-                      Excluir Anúncio
-                    </button>
-                  </div>
+            // VENDEDOR (DONO) VIEW
+            return (
+              <div>
+                <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '2rem', marginTop: '1.5rem' }}>
+                  <button
+                    onClick={handleEditar}
+                    style={{ flex: '1 1 180px', padding: '0.9rem 1.1rem', background: '#0f172a', color: '#fff', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: 700, cursor: 'pointer' }}
+                  >
+                    Editar Anúncio
+                  </button>
+                  <button
+                    onClick={handleExcluir}
+                    style={{ flex: '1 1 180px', padding: '0.9rem 1.1rem', background: '#dc2626', color: '#fff', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: 700, cursor: 'pointer' }}
+                  >
+                    Excluir Anúncio
+                  </button>
+                </div>
 
-                  {negociacoesDesteAnuncio.length > 0 && (
-                    <div style={{ marginTop: '2.5rem', borderTop: '2px solid #f1f5f9', paddingTop: '1.5rem' }}>
-                      <h3 style={{ fontSize: '1.3rem', color: '#0f172a', fontWeight: 800, marginBottom: '1.25rem' }}>
-                        📥 Propostas Recebidas para esta Peça ({negociacoesDesteAnuncio.length})
-                      </h3>
+                {negociacoesDesteAnuncio.length > 0 && (
+                  <div style={{ marginTop: '2.5rem', borderTop: '2px solid #f1f5f9', paddingTop: '1.5rem' }}>
+                    <h3 style={{ fontSize: '1.3rem', color: '#0f172a', fontWeight: 800, marginBottom: '1.25rem' }}>
+                      📥 Propostas Recebidas para esta Peça ({negociacoesDesteAnuncio.length})
+                    </h3>
 
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                        {negociacoesDesteAnuncio.map((n) => {
-                          const estaExpandido = expandedId === n.id;
-                          const activeProposal = todasPropostas.find(pr => pr.negociacaoId === n.id && pr.status === 'pendente');
-                          const valorVats = activeProposal
-                            ? (activeProposal.valorVats ?? activeProposal.complementoVats ?? 0)
-                            : (n.vatsPropostos ?? n.precoOriginal ?? 0);
-                          const ultimaPropostaComprador = activeProposal && activeProposal.autorId === n.compradorId;
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      {negociacoesDesteAnuncio.map((n) => {
+                        const estaExpandido = expandedId === n.id;
+                        const activeProposal = todasPropostas.find(pr => pr.negociacaoId === n.id && pr.status === 'pendente');
+                        const valorVats = activeProposal
+                          ? (activeProposal.valorVats ?? activeProposal.complementoVats ?? 0)
+                          : (n.vatsPropostos ?? n.precoOriginal ?? 0);
+                        const ultimaPropostaComprador = activeProposal && activeProposal.autorId === n.compradorId;
 
-                          return (
+                        return (
+                          <div
+                            key={n.id}
+                            style={{
+                              border: '1px solid #e2e8f0',
+                              borderRadius: '12px',
+                              padding: '1.25rem',
+                              background: '#ffffff',
+                              boxShadow: estaExpandido ? '0 10px 15px -3px rgba(0,0,0,0.05)' : 'none',
+                              transition: 'all 0.2s ease'
+                            }}
+                          >
                             <div
-                              key={n.id}
+                              onClick={() => setExpandedId(estaExpandido ? null : n.id)}
                               style={{
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '12px',
-                                padding: '1.25rem',
-                                background: '#ffffff',
-                                boxShadow: estaExpandido ? '0 10px 15px -3px rgba(0,0,0,0.05)' : 'none',
-                                transition: 'all 0.2s ease'
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                cursor: 'pointer'
                               }}
                             >
-                              <div
-                                onClick={() => setExpandedId(estaExpandido ? null : n.id)}
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'space-between',
-                                  alignItems: 'center',
-                                  cursor: 'pointer'
-                                }}
-                              >
-                                <div>
-                                  <h4 style={{ margin: '0 0 0.25rem', fontSize: '1.05rem', color: '#334155' }}>
-                                    Proposta de: <strong>{n.compradorNome || 'Interessado'}</strong>
-                                  </h4>
-                                  <p style={{ margin: 0, fontSize: '0.88rem', color: '#64748b' }}>
-                                    Tipo: <span style={{ fontWeight: 700, color: n.tipo === 'venda' ? '#0369a1' : '#d97706' }}>{n.tipo}</span> | Último valor: <strong>{valorVats} VATs</strong>
-                                  </p>
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                  <span style={{ padding: '0.2rem 0.6rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 800, ...getStatusBadgeStyle(n.status) }}>
-                                    {n.status}
-                                  </span>
-                                  <span style={{ fontSize: '1.2rem', color: '#94a3b8' }}>
-                                    {estaExpandido ? '▼' : '▶'}
-                                  </span>
-                                </div>
+                              <div>
+                                <h4 style={{ margin: '0 0 0.25rem', fontSize: '1.05rem', color: '#334155' }}>
+                                  Proposta de: <strong>{n.compradorNome || 'Interessado'}</strong>
+                                </h4>
+                                <p style={{ margin: 0, fontSize: '0.88rem', color: '#64748b' }}>
+                                  Tipo: <span style={{ fontWeight: 700, color: n.tipo === 'venda' ? '#0369a1' : '#d97706' }}>{n.tipo}</span> | Último valor: <strong>{valorVats} VATs</strong>
+                                </p>
                               </div>
-
-                              {estaExpandido && (
-                                <div style={{ marginTop: '1.25rem', borderTop: '1px solid #f1f5f9', paddingTop: '1rem' }}>
-                                  <p style={{ margin: '0 0 1rem', fontSize: '0.92rem', color: '#64748b' }}>
-                                    Data de início: {n.criadoEm ? new Date(n.criadoEm).toLocaleDateString() : 'Não informada'} <br />
-                                    {n.status === 'em_andamento' && (
-                                      <span style={{ fontWeight: 600, color: '#334155' }}>
-                                        {ultimaPropostaComprador ? 'Aguardando sua decisão.' : 'Aguardando resposta do comprador.'}
-                                      </span>
-                                    )}
-                                  </p>
-
-                                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                                    {n.status === 'em_andamento' && (
-                                      <>
-                                        {ultimaPropostaComprador && (
-                                          <button
-                                            onClick={() => handleAceitar(n)}
-                                            style={{ padding: '0.55rem 1rem', background: '#22c55e', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
-                                          >
-                                            Aceitar
-                                          </button>
-                                        )}
-                                        {ultimaPropostaComprador && (
-                                          <button
-                                            onClick={() => {
-                                              setContraNegociacao(n);
-                                              if (n.tipo === 'venda') {
-                                                setContraValor(activeProposal.valorVats || valorVat);
-                                              } else {
-                                                setContraPecas(activeProposal.pecasOferecidas || []);
-                                                setContraComplemento(activeProposal.complementoVats || 0);
-                                              }
-                                              setErrorMsg('');
-                                              setShowContraModal(true);
-                                            }}
-                                            style={{ padding: '0.55rem 1rem', background: '#fc9003', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
-                                          >
-                                            Contrapropor
-                                          </button>
-                                        )}
-                                        {ultimaPropostaComprador && (
-                                          <button
-                                            onClick={() => handleRecusar(n)}
-                                            style={{ padding: '0.55rem 1rem', background: '#ef4444', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
-                                          >
-                                            Recusar Proposta
-                                          </button>
-                                        )}
-                                      </>
-                                    )}
-
-                                    {n.status === 'aceita' && (
-                                      <button
-                                        onClick={() => handleConcluir(n)}
-                                        style={{ padding: '0.6rem 1.2rem', background: '#0ea5e9', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
-                                      >
-                                        Concluir Negócio
-                                      </button>
-                                    )}
-
-                                    {n.status !== 'concluida' && n.status !== 'cancelada' && (
-                                      <button
-                                        onClick={() => handleCancelarNegociacao(n)}
-                                        style={{ padding: '0.55rem 1rem', background: '#4b5563', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
-                                      >
-                                        Cancelar Negociação
-                                      </button>
-                                    )}
-                                  </div>
-
-                                  {renderTimeline(n)}
-                                </div>
-                              )}
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                <span style={{ padding: '0.2rem 0.6rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 800, ...getStatusBadgeStyle(n.status) }}>
+                                  {n.status}
+                                </span>
+                                <span style={{ fontSize: '1.2rem', color: '#94a3b8' }}>
+                                  {estaExpandido ? '▼' : '▶'}
+                                </span>
+                              </div>
                             </div>
-                          );
-                        })}
-                      </div>
+
+                            {estaExpandido && (
+                              <div style={{ marginTop: '1.25rem', borderTop: '1px solid #f1f5f9', paddingTop: '1rem' }}>
+                                <p style={{ margin: '0 0 1rem', fontSize: '0.92rem', color: '#64748b' }}>
+                                  Data de início: {n.criadoEm ? new Date(n.criadoEm).toLocaleDateString() : 'Não informada'} <br />
+                                  {n.status === 'em_andamento' && (
+                                    <span style={{ fontWeight: 600, color: '#334155' }}>
+                                      {ultimaPropostaComprador ? 'Aguardando sua decisão.' : 'Aguardando resposta do comprador.'}
+                                    </span>
+                                  )}
+                                </p>
+
+                                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                  {n.status === 'em_andamento' && (
+                                    <>
+                                      {ultimaPropostaComprador && (
+                                        <button
+                                          onClick={() => handleAceitar(n)}
+                                          style={{ padding: '0.55rem 1rem', background: '#22c55e', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
+                                        >
+                                          Aceitar
+                                        </button>
+                                      )}
+                                      {ultimaPropostaComprador && (
+                                        <button
+                                          onClick={() => {
+                                            setContraNegociacao(n);
+                                            if (n.tipo === 'venda') {
+                                              setContraValor(activeProposal.valorVats || valorVat);
+                                            } else {
+                                              setContraPecas(activeProposal.pecasOferecidas || []);
+                                              setContraComplemento(activeProposal.complementoVats || 0);
+                                            }
+                                            setErrorMsg('');
+                                            setShowContraModal(true);
+                                          }}
+                                          style={{ padding: '0.55rem 1rem', background: '#fc9003', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
+                                        >
+                                          Contrapropor
+                                        </button>
+                                      )}
+                                      {ultimaPropostaComprador && (
+                                        <button
+                                          onClick={() => handleRecusar(n)}
+                                          style={{ padding: '0.55rem 1rem', background: '#ef4444', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
+                                        >
+                                          Recusar Proposta
+                                        </button>
+                                      )}
+                                    </>
+                                  )}
+
+                                  {n.status === 'aceita' && (
+                                    <button
+                                      onClick={() => handleConcluir(n)}
+                                      style={{ padding: '0.6rem 1.2rem', background: '#0ea5e9', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
+                                    >
+                                      Concluir Negócio
+                                    </button>
+                                  )}
+
+                                  {n.status !== 'concluida' && n.status !== 'cancelada' && (
+                                    <button
+                                      onClick={() => handleCancelarNegociacao(n)}
+                                      style={{ padding: '0.55rem 1rem', background: '#4b5563', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
+                                    >
+                                      Cancelar Negociação
+                                    </button>
+                                  )}
+                                </div>
+
+                                {renderTimeline(n)}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
-                  )}
-                </div>
-              );
-            }
+                  </div>
+                )}
+              </div>
+            );
+          }
         })()}
 
         {/* MODAL DE PROPOSTA DE COMPRA (VENDA) */}
@@ -905,12 +905,9 @@ export function DetalheAnuncio() {
                     value={vendaValor}
                     onChange={(e) => setVendaValor(Number(e.target.value))}
                     min={1}
-                    max={anuncio.vats}
                     className="field-control"
                   />
-                  <p style={{ margin: '0.35rem 0 0', fontSize: '0.8rem', color: '#64748b' }}>
-                    O valor máximo é de {anuncio.vats} VATs (Preço anunciado).
-                  </p>
+
                 </div>
 
                 {errorMsg && <p style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: 700, margin: '0 0 1rem' }}>⚠️ {errorMsg}</p>}
@@ -934,7 +931,7 @@ export function DetalheAnuncio() {
             <div style={{ backgroundColor: '#ffffff', padding: '2rem', borderRadius: '16px', width: '90%', maxWidth: '550px', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
               <h3 style={{ margin: '0 0 1rem', fontSize: '1.25rem', fontWeight: 800 }}>Enviar Proposta de Troca</h3>
               <form onSubmit={handleCriarPropostaTroca}>
-                
+
                 {/* Seleção de peças */}
                 <div style={{ marginBottom: '1.25rem' }}>
                   <label style={{ display: 'block', marginBottom: '0.5rem', color: '#475569', fontWeight: 700 }}>
