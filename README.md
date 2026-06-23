@@ -110,26 +110,13 @@ O terminal exibirá a URL local gerada (geralmente `http://localhost:5173`). Abr
 
 ## Screenshots
 
-*(Os caminhos abaixo são placeholders que deverão ser atualizados com as capturas de tela finais do sistema)*
+![imagem](https://i.imgur.com/95TzEgs.jpeg)
 
-#### 1. Página Inicial — Armário de Desapegos
-![Home com Lista de Anúncios e Filtros](placeholder_home.png)
+![imagem](https://i.imgur.com/Llj47Ly.jpeg)
 
-#### 2. Detalhes do Anúncio e Propostas
-![Detalhes do Item e Formulário de Ofertas](placeholder_detalhes.png)
+![imagem](https://i.imgur.com/58ebAS3.jpeg)
 
-#### 3. Minha Garagem Virtual
-![Garagem com Gerenciamento de Anúncios](placeholder_garagem.png)
-
-#### 4. Painel de Negociações
-![Central de Acompanhamento de Transações](placeholder_negociacoes.png)
-
-#### 5. Sala de Chat da Negociação
-![Chat de Mensagens entre Usuários](placeholder_chat.png)
-
-#### 6. Perfil do Usuário e Carteira VAT
-![Perfil com Saldo de VATs e Estatísticas](placeholder_perfil.png)
-
+![imagem](https://i.imgur.com/nndTtQw.jpeg)
 
 ## Dificuldades Encontradas
 
