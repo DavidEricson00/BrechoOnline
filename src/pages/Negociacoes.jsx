@@ -568,21 +568,73 @@ export function Negociacoes() {
                     )}
 
                     {n.status === 'aceita' && (
-                      <button
-                        onClick={() => handleConcluir(n)}
-                        style={{
-                          padding: '0.5rem 0.95rem',
-                          background: '#0ea5e9',
-                          border: 'none',
-                          borderRadius: '8px',
-                          color: '#ffffff',
-                          fontWeight: 700,
-                          fontSize: '0.85rem',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Concluir Negócio
-                      </button>
+                      <>
+                        <button
+                          onClick={() => navigate(`/chat/${n.id}`)}
+                          style={{
+                            padding: '0.5rem 0.95rem',
+                            background: '#0ea5e9',
+                            border: 'none',
+                            borderRadius: '8px',
+                            color: '#ffffff',
+                            fontWeight: 700,
+                            fontSize: '0.85rem',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Abrir Chat
+                        </button>
+                        <button
+                          onClick={() => handleConcluir(n)}
+                          style={{
+                            padding: '0.5rem 0.95rem',
+                            background: '#0f172a',
+                            border: 'none',
+                            borderRadius: '8px',
+                            color: '#ffffff',
+                            fontWeight: 700,
+                            fontSize: '0.85rem',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Concluir Negócio
+                        </button>
+                      </>
+                    )}
+
+                    {n.status === 'concluida' && (
+                      <>
+                        <button
+                          onClick={() => navigate(`/chat/${n.id}`)}
+                          style={{
+                            padding: '0.5rem 0.95rem',
+                            background: '#f8fafc',
+                            border: '1px solid #cbd5e1',
+                            borderRadius: '8px',
+                            color: '#334155',
+                            fontWeight: 700,
+                            fontSize: '0.85rem',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Ver Chat
+                        </button>
+                        <button
+                          onClick={() => navigate(`/avaliacoes/${n.id}`)}
+                          style={{
+                            padding: '0.5rem 0.95rem',
+                            background: '#06b6d4',
+                            border: 'none',
+                            borderRadius: '8px',
+                            color: '#ffffff',
+                            fontWeight: 700,
+                            fontSize: '0.85rem',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Avaliar
+                        </button>
+                      </>
                     )}
 
                     {n.status !== 'concluida' && n.status !== 'cancelada' && (

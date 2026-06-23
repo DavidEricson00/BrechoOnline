@@ -18,11 +18,11 @@ export function Perfil() {
 
   const avaliacoes = useMemo(() => {
     const all = JSON.parse(localStorage.getItem('avaliacoes') || '[]');
-    if (!usuarioLogado) return { média: null, total: 0 };
+    if (!usuarioLogado) return { media: null, total: 0 };
     const meuId = usuarioLogado.id;
     const minhas = all.filter(a => a.destinatarioId === meuId || a.avaliadoId === meuId || a.usuarioAvaliadoId === meuId);
     const soma = minhas.reduce((s, it) => {
-      const nota = it.nota ?? it.rating ?? it.valor ?? 0;
+      const nota = it.estrelas ?? it.nota ?? it.rating ?? it.valor ?? 0;
       return s + Number(nota || 0);
     }, 0);
     const media = minhas.length ? +(soma / minhas.length).toFixed(2) : null;
@@ -180,7 +180,12 @@ export function Perfil() {
             <div style={{ display: 'grid', gap: '0.75rem' }}>
               <div style={{ padding: '0.95rem', borderRadius: 14, background: '#f8fafc' }}>
                 <div style={{ color: '#6b7280', fontSize: 13 }}>Média de avaliações</div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#111827' }}>{avaliacoes.media ?? 'Sem avaliações'}</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#111827' }}>
+                  {avaliacoes.media !== null ? `${avaliacoes.media}/10` : 'Sem avaliações'}
+                </div>
+                <div style={{ color: '#94a3b8', fontSize: 12 }}>
+                  {avaliacoes.total} {avaliacoes.total === 1 ? 'avaliação recebida' : 'avaliações recebidas'}
+                </div>
               </div>
               <div style={{ padding: '0.95rem', borderRadius: 14, background: '#f8fafc' }}>
                 <div style={{ color: '#6b7280', fontSize: 13 }}>Negociações concluídas</div>
