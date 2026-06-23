@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnuncioCard } from '../components/AnuncioCard';
-//import { anunciosMock } from '../mocks/anuncios';
 
 const categorias = ['', 'camisa', 'calça', 'calçado', 'acessório'];
 const tamanhos = ['', 'PP', 'P', 'M', 'G', 'GG'];
@@ -13,8 +12,8 @@ const ordenacoes = [
   { value: 'recentes', label: 'Mais recentes' }
 ];
 
-const anunciosStorage = JSON.parse(localStorage.getItem("anuncios"))
-const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"))
+const anunciosStorage = JSON.parse(localStorage.getItem("anuncios"));
+const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
 
 function extrairFaixa(valor) {
   if (!valor) return null;
@@ -40,8 +39,75 @@ function ordenarAnuncios(anuncios, ordenacao) {
   return lista.sort((a, b) => new Date(b.criadoEm) - new Date(a.criadoEm));
 }
 
+import imgJaqueta from "../assets/jaqueta.webp";
+import imgTenis from "../assets/tenis.jpeg";
+import imgCamiseta from "../assets/camiseta_rock.jpg";
+import imgOculos from "../assets/oculos.webp";
+
 export function Home() {
   const navigate = useNavigate();
+  
+
+  const [anuncios] = useState(anunciosStorage || [
+    {
+      id: "anc_mock1",
+      usuarioId: "usr_outro",
+      titulo: "Jaqueta Jeans Vintage",
+      descricao: "Pouco uso, sem manchas e com todos os botões originais.",
+      categoria: "casaco",
+      tamanho: "M",
+      conservacao: "Bom",
+      foto: imgJaqueta, 
+      modalidade: "Ambos",
+      vats: 35,
+      status: "disponivel",
+      criadoEm: new Date().toISOString()
+    },
+    {
+      id: "anc_mock2",
+      usuarioId: "usr_outro2",
+      titulo: "Tênis Air Casual",
+      descricao: "Perfeito estado, higienizado e pronto para uso.",
+      categoria: "calcado",
+      tamanho: "40",
+      conservacao: "Novo",
+      foto: imgTenis, 
+      modalidade: "Venda",
+      vats: 120,
+      status: "disponivel",
+      criadoEm: new Date().toISOString()
+    },
+    {
+      id: "anc_mock3",
+      usuarioId: "usr_outro3",
+      titulo: "Camiseta Estampa Rock",
+      descricao: "Algodão 100%, estampa levemente desbotada estilo vintage.",
+      categoria: "camiseta",
+      tamanho: "G",
+      conservacao: "Bom",
+      foto: imgCamiseta, 
+      modalidade: "Troca",
+      vats: 25,
+      status: "disponivel",
+      criadoEm: new Date().toISOString()
+    },
+    {
+      id: "anc_mock4",
+      usuarioId: "usr_outro4",
+      titulo: "Óculos de Sol Retrô",
+      descricao: "Acompanha case de proteção, sem riscos nas lentes.",
+      categoria: "acessorio",
+      tamanho: "Único",
+      conservacao: "Excelente",
+      foto: imgOculos, 
+      modalidade: "Ambos",
+      vats: 50,
+      status: "disponivel",
+      criadoEm: new Date().toISOString()
+    }
+  ]);
+
+
   const [busca, setBusca] = useState('');
   const [categoria, setCategoria] = useState('');
   const [tamanho, setTamanho] = useState('');
@@ -55,8 +121,9 @@ export function Home() {
     const min = extrairFaixa(vatMin);
     const max = extrairFaixa(vatMax);
 
-    const base = anunciosStorage.filter((anuncio) => {
-      if (anuncio.status !== 'disponivel' || anuncio.usuarioId == usuarioLogado.id) return false;
+    const base = anuncios.filter((anuncio) => {
+      if (anuncio.status !== 'disponivel') return false;
+      if (usuarioLogado && anuncio.usuarioId === usuarioLogado.id) return false;
 
       if (textoBusca) {
         const titulo = normalizarTexto(anuncio.titulo);
@@ -74,7 +141,7 @@ export function Home() {
     });
 
     return ordenarAnuncios(base, ordenacao);
-  }, [busca, categoria, tamanho, modalidade, vatMin, vatMax, ordenacao]);
+  }, [anuncios, busca, categoria, tamanho, modalidade, vatMin, vatMax, ordenacao]);
 
   const limparFiltros = () => {
     setBusca('');
