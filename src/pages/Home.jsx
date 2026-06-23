@@ -1,5 +1,10 @@
 import { useState } from 'react';
 
+import imgJaqueta from "../assets/jaqueta.webp";
+import imgTenis from "../assets/tenis.jpeg";
+import imgCamiseta from "../assets/camiseta_rock.jpg";
+import imgOculos from "../assets/oculos.webp";
+
 export function Home() {
   const [anuncios] = useState([
     {
@@ -10,7 +15,7 @@ export function Home() {
       categoria: "casaco",
       tamanho: "M",
       conservacao: "Bom",
-      foto: "",
+      foto: imgJaqueta, 
       modalidade: "Ambos",
       vats: 35,
       status: "disponivel",
@@ -24,9 +29,37 @@ export function Home() {
       categoria: "calcado",
       tamanho: "40",
       conservacao: "Novo",
-      foto: "",
+      foto: imgTenis, 
       modalidade: "Venda",
       vats: 120,
+      status: "disponivel",
+      criadoEm: new Date().toISOString()
+    },
+    {
+      id: "anc_mock3",
+      usuarioId: "usr_outro3",
+      titulo: "Camiseta Estampa Rock",
+      descricao: "Algodão 100%, estampa levemente desbotada estilo vintage.",
+      categoria: "camiseta",
+      tamanho: "G",
+      conservacao: "Bom",
+      foto: imgCamiseta, 
+      modalidade: "Troca",
+      vats: 25,
+      status: "disponivel",
+      criadoEm: new Date().toISOString()
+    },
+    {
+      id: "anc_mock4",
+      usuarioId: "usr_outro4",
+      titulo: "Óculos de Sol Retrô",
+      descricao: "Acompanha case de proteção, sem riscos nas lentes.",
+      categoria: "acessorio",
+      tamanho: "Único",
+      conservacao: "Excelente",
+      foto: imgOculos, 
+      modalidade: "Ambos",
+      vats: 50,
       status: "disponivel",
       criadoEm: new Date().toISOString()
     }
