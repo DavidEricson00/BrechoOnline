@@ -11,7 +11,7 @@ export function MainLayout() {
       </main>
       
       <footer style={{ textAlign: 'center', padding: '1.5rem', background: '#fff', borderTop: '1px solid #eee', fontSize: '0.85rem', color: '#999' }}>
-        &copy; {new Date().getFullYear()} Brechó Online - Consumo Consciente & Sustentável
+        &copy; {new Date().getFullYear()} Memória de Armário - Consumo consciente & estilo sustentável
       </footer>
     </div>
   );
