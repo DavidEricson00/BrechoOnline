@@ -3,35 +3,24 @@ import {useNavigate} from 'react-router-dom';
 import { useAuth  } from '../context/AuthContext';
 
 export function Saque() {
+  const navigate = useNavigate();
+  const { usuarioLogado, updateProfile } = useAuth();
 
-    const navigate = useNavigate()
-    const {usuarioLogado} = useAuth()
-    const usuarios = JSON.parse(localStorage.getItem("usuarios"))
- //[{},{}] 
-    
+  const [valor, setValor] = useState(0)
+  const [alerta, setAlerta] = useState('')
 
-    const [valor, setValor] = useState(0)
-    const [alerta, setAlerta] = useState('')
+  function handleSaque(){
+    const vatsUsuario = usuarioLogado?.vats ?? 0;
+    if(valor>0 && valor <= vatsUsuario){
+      const novoSaldo = vatsUsuario - valor;
+      updateProfile(usuarioLogado.id, { vats: novoSaldo });
 
-    function handleSaque(){
-            if(valor>0 && valor <= usuarioLogado.vats){
-                usuarioLogado.vats -= valor
-                
-                let usuariosAtualizado = usuarios.map((u) => 
-                    u.id == usuarioLogado.id ? {...u, vats: usuarioLogado.vats} : u)
-                
-                localStorage.setItem("usuarios", JSON.stringify(usuariosAtualizado))
-
-                setAlerta("Estamos processando sua transação...")
-                navigate("/perfil")
-            } else {
-                setAlerta('Por favor, insira um número válido')
-            }
-
-            
-        
-
+      setAlerta("Estamos processando sua transação...")
+      navigate("/perfil")
+    } else {
+      setAlerta('Por favor, insira um número válido')
     }
+  }
 
     return(
         <>

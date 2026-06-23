@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnuncioCard } from '../components/AnuncioCard';
+import { anunciosMock } from '../mocks/anuncios';
+import { useAuth } from '../context/AuthContext';
 
 const categorias = ['', 'camisa', 'calça', 'calçado', 'acessório'];
 const tamanhos = ['', 'PP', 'P', 'M', 'G', 'GG'];
@@ -13,7 +15,13 @@ const ordenacoes = [
 ];
 
 const anunciosStorage = JSON.parse(localStorage.getItem("anuncios"));
-const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
+
+function normalizarStatus(status) {
+  if (!status) return '';
+  const s = status.toLowerCase();
+  if (s === 'disponível' || s === 'disponivel') return 'disponivel';
+  return s;
+}
 
 function extrairFaixa(valor) {
   if (!valor) return null;
@@ -46,7 +54,7 @@ import imgOculos from "../assets/oculos.webp";
 
 export function Home() {
   const navigate = useNavigate();
-  
+  const { usuarioLogado } = useAuth();
 
   const [anuncios] = useState(anunciosStorage || [
     {
@@ -107,7 +115,6 @@ export function Home() {
     }
   ]);
 
-
   const [busca, setBusca] = useState('');
   const [categoria, setCategoria] = useState('');
   const [tamanho, setTamanho] = useState('');
@@ -117,13 +124,26 @@ export function Home() {
   const [ordenacao, setOrdenacao] = useState('recentes');
 
   const anunciosFiltrados = useMemo(() => {
+    const local = localStorage.getItem("anuncios");
+    const listaParaFiltrar = (() => {
+      if (!local) {
+        localStorage.setItem("anuncios", JSON.stringify(anuncios));
+        return anuncios;
+      }
+      try {
+        return JSON.parse(local) || [];
+      } catch {
+        return [];
+      }
+    })();
+
     const textoBusca = normalizarTexto(busca.trim());
     const min = extrairFaixa(vatMin);
     const max = extrairFaixa(vatMax);
 
-    const base = anuncios.filter((anuncio) => {
-      if (anuncio.status !== 'disponivel') return false;
-      if (usuarioLogado && anuncio.usuarioId === usuarioLogado.id) return false;
+    const base = listaParaFiltrar.filter((anuncio) => {
+      const statusNormalizado = normalizarStatus(anuncio.status);
+      if (statusNormalizado !== 'disponivel' || (usuarioLogado?.id && anuncio.usuarioId === usuarioLogado.id)) return false;
 
       if (textoBusca) {
         const titulo = normalizarTexto(anuncio.titulo);
@@ -141,7 +161,7 @@ export function Home() {
     });
 
     return ordenarAnuncios(base, ordenacao);
-  }, [anuncios, busca, categoria, tamanho, modalidade, vatMin, vatMax, ordenacao]);
+  }, [anuncios, busca, categoria, tamanho, modalidade, vatMin, vatMax, ordenacao, usuarioLogado]);
 
   const limparFiltros = () => {
     setBusca('');

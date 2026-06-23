@@ -7,6 +7,8 @@ import { Garagem } from '../pages/Garagem';
 import { Perfil } from '../pages/Perfil';
 import { DetalheAnuncio } from '../pages/DetalheAnuncio';
 import { Negociacoes } from '../pages/Negociacoes';
+import { ChatNegociacao } from '../pages/ChatNegociacao';
+import { Avaliacoes } from '../pages/Avaliacoes';
 import { ProtectedRoute } from '../components/ProtectedRoute';
 import { Deposito } from '../pages/Deposito'
 import { Saque } from '../pages/Saque'
@@ -30,6 +32,12 @@ export function AppRoutes() {
           } />
           <Route path="minhas-negociacoes" element={
             <ProtectedRoute><Negociacoes /></ProtectedRoute>
+          } />
+          <Route path="chat/:id" element={
+            <ProtectedRoute><ChatNegociacao /></ProtectedRoute>
+          } />
+          <Route path="avaliacoes/:id" element={
+            <ProtectedRoute><Avaliacoes /></ProtectedRoute>
           } />
 
           <Route path="deposito" element={
