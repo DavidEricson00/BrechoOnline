@@ -1,25 +1,56 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { AnuncioCard } from '../components/AnuncioCard';
+
+const STATUS = {
+  DISPONIVEL: 'disponivel',
+  EM_NEGOCIACAO: 'em_negociacao',
+  VENDIDO: 'vendido',
+  TROCADO: 'trocado'
+};
+
+const STATUS_LABELS = {
+  [STATUS.DISPONIVEL]: 'Disponível',
+  [STATUS.EM_NEGOCIACAO]: 'Negociação',
+  [STATUS.VENDIDO]: 'Vendido',
+  [STATUS.TROCADO]: 'Trocado'
+};
+
+function normalizarStatus(status) {
+  const mapa = {
+    Disponível: STATUS.DISPONIVEL,
+    Disponivel: STATUS.DISPONIVEL,
+    disponivel: STATUS.DISPONIVEL,
+    'Em negociação': STATUS.EM_NEGOCIACAO,
+    'Em negociacao': STATUS.EM_NEGOCIACAO,
+    em_negociacao: STATUS.EM_NEGOCIACAO,
+    'Trocado/Vendido': STATUS.VENDIDO,
+    vendido: STATUS.VENDIDO,
+    trocado: STATUS.TROCADO
+  };
+
+  return mapa[status] || status;
+}
 
 export function Garagem() {
   const { usuarioLogado } = useAuth();
-  const [anuncios, setAnuncios] = useState([]);
-  
-
-  const [idEdicao, setIdEdicao] = useState(null);
-  const [titulo, setTitulo] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [categoria, setCategoria] = useState('camisa');
-  const [tamanho, setTamanho] = useState('M');
-  const [conservacao, setConservacao] = useState('Bom');
-  const [foto, setFoto] = useState('');
-  const [modalidade, setModalidade] = useState('Venda');
-  const [vats, setVats] = useState('');
-
-  useEffect(() => {
-    const salvos = localStorage.getItem('anuncios');
-    if (salvos) setAnuncios(JSON.parse(salvos));
-  }, []);
+  const navigate = useNavigate();
+  const anunciosPersistidos = JSON.parse(localStorage.getItem('anuncios') || '[]');
+  const anuncioIdEdicao = localStorage.getItem('editarAnuncioId');
+  const anuncioParaEdicaoInicial = anuncioIdEdicao
+    ? anunciosPersistidos.find((item) => item.id === anuncioIdEdicao && item.usuarioId === usuarioLogado.id)
+    : null;
+  const [anuncios, setAnuncios] = useState(() => anunciosPersistidos);
+  const [idEdicao, setIdEdicao] = useState(() => anuncioParaEdicaoInicial?.id || null);
+  const [titulo, setTitulo] = useState(() => anuncioParaEdicaoInicial?.titulo || '');
+  const [descricao, setDescricao] = useState(() => anuncioParaEdicaoInicial?.descricao || '');
+  const [categoria, setCategoria] = useState(() => anuncioParaEdicaoInicial?.categoria || 'camisa');
+  const [tamanho, setTamanho] = useState(() => anuncioParaEdicaoInicial?.tamanho || 'M');
+  const [conservacao, setConservacao] = useState(() => anuncioParaEdicaoInicial?.conservacao || 'Bom');
+  const [foto, setFoto] = useState(() => anuncioParaEdicaoInicial?.foto || '');
+  const [modalidade, setModalidade] = useState(() => anuncioParaEdicaoInicial?.modalidade || 'Venda');
+  const [vats, setVats] = useState(() => (anuncioParaEdicaoInicial ? anuncioParaEdicaoInicial.vats.toString() : ''));
 
   const salvarNoStorage = (novaLista) => {
     setAnuncios(novaLista);
@@ -48,25 +79,31 @@ export function Garagem() {
     }
 
     if (idEdicao) {
-
       const novaLista = anuncios.map((anuncio) => {
         if (anuncio.id === idEdicao) {
           if (anuncio.usuarioId !== usuarioLogado.id) return anuncio;
-          if (anuncio.status !== 'Disponível') {
+          if (normalizarStatus(anuncio.status) !== STATUS.DISPONIVEL) {
             alert('Você só pode editar anúncios que estão na lista Disponível!');
             return anuncio;
           }
           return {
             ...anuncio,
-            titulo, descricao, categoria, tamanho, conservacao, foto, modalidade, vats: valorVat
+            titulo,
+            descricao,
+            categoria,
+            tamanho,
+            conservacao,
+            foto,
+            modalidade,
+            vats: valorVat
           };
         }
         return anuncio;
       });
+
       salvarNoStorage(novaLista);
       alert('Anúncio atualizado com sucesso!');
     } else {
-
       const novoAnuncio = {
         id: crypto.randomUUID(),
         usuarioId: usuarioLogado.id,
@@ -75,14 +112,17 @@ export function Garagem() {
         categoria,
         tamanho,
         conservacao,
-        foto: foto || 'https://via.placeholder.com/300?text=Sem+Foto',
+        foto: foto || 'https://via.placeholder.com/600x800?text=Sem+Foto',
         modalidade,
         vats: valorVat,
-        status: 'Disponível'
+        status: STATUS.DISPONIVEL,
+        criadoEm: new Date().toISOString()
       };
+
       salvarNoStorage([...anuncios, novoAnuncio]);
       alert('Peça anunciada na sua Garagem!');
     }
+
     limparFormulario();
   };
 
@@ -98,42 +138,67 @@ export function Garagem() {
     setVats(anuncio.vats.toString());
   };
 
+  useEffect(() => {
+    if (anuncioParaEdicaoInicial) {
+      localStorage.removeItem('editarAnuncioId');
+    }
+  }, [anuncioParaEdicaoInicial]);
+
   const handleExcluirAnuncio = (id) => {
     if (window.confirm('Tem certeza que deseja excluir permanentemente este anúncio?')) {
-      const novaLista = anuncios.filter(a => a.id !== id);
+      const novaLista = anuncios.filter((a) => a.id !== id);
       salvarNoStorage(novaLista);
     }
   };
 
-
   const handleMudarStatus = (id, novoStatus) => {
-    const novaLista = anuncios.map(a => a.id === id ? { ...a, status: novoStatus } : a);
+    const novaLista = anuncios.map((a) => (a.id === id ? { ...a, status: novoStatus } : a));
     salvarNoStorage(novaLista);
   };
 
-  const meusAnuncios = anuncios.filter(a => a.usuarioId === usuarioLogado.id);
+  const meusAnuncios = anuncios.filter((a) => a.usuarioId === usuarioLogado.id);
+  const secoes = [
+    {
+      titulo: 'Disponíveis',
+      filtro: (anuncio) => normalizarStatus(anuncio.status) === STATUS.DISPONIVEL,
+      opcoes: [STATUS.DISPONIVEL]
+    },
+    {
+      titulo: 'Em negociação',
+      filtro: (anuncio) => normalizarStatus(anuncio.status) === STATUS.EM_NEGOCIACAO,
+      opcoes: [STATUS.EM_NEGOCIACAO]
+    },
+    {
+      titulo: 'Histórico',
+      filtro: (anuncio) => {
+        const statusNormalizado = normalizarStatus(anuncio.status);
+        return statusNormalizado === STATUS.VENDIDO || statusNormalizado === STATUS.TROCADO;
+      },
+      opcoes: [STATUS.VENDIDO, STATUS.TROCADO]
+    }
+  ];
+  const statusDisponiveis = [STATUS.DISPONIVEL, STATUS.EM_NEGOCIACAO, STATUS.VENDIDO, STATUS.TROCADO];
 
   return (
     <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
       <h2>Minha Garagem Virtual</h2>
       <p>Gerencie suas peças, mude os estados das negociações e cadastre novos desapegos.</p>
 
-
       <div style={{ background: '#f9f9f9', padding: '1.5rem', borderRadius: '8px', marginBottom: '2rem', border: '1px solid #ddd' }}>
         <h3>{idEdicao ? 'Editar Anúncio' : 'Anunciar Nova Peça'}</h3>
         <form onSubmit={handleSalvarAnuncio} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <input type="text" placeholder="Título do anúncio" required value={titulo} onChange={e => setTitulo(e.target.value)} />
-          <textarea placeholder="Descrição da roupa/acessório" required value={descricao} onChange={e => setDescricao(e.target.value)} />
-          
+          <input type="text" placeholder="Título do anúncio" required value={titulo} onChange={(e) => setTitulo(e.target.value)} className="field-control" />
+          <textarea placeholder="Descrição da roupa/acessório" required value={descricao} onChange={(e) => setDescricao(e.target.value)} className="field-control field-control--textarea" />
+
           <div style={{ display: 'flex', gap: '1rem' }}>
-            <select value={categoria} onChange={e => setCategoria(e.target.value)} style={{ flex: 1 }}>
+            <select value={categoria} onChange={(e) => setCategoria(e.target.value)} className="field-control field-control--select" style={{ flex: 1 }}>
               <option value="camisa">Camisa</option>
               <option value="calça">Calça</option>
               <option value="calçado">Calçado</option>
               <option value="acessório">Acessório</option>
             </select>
 
-            <select value={tamanho} onChange={e => setTamanho(e.target.value)} style={{ flex: 1 }}>
+            <select value={tamanho} onChange={(e) => setTamanho(e.target.value)} className="field-control field-control--select" style={{ flex: 1 }}>
               <option value="PP">PP</option>
               <option value="P">P</option>
               <option value="M">M</option>
@@ -143,14 +208,14 @@ export function Garagem() {
           </div>
 
           <div style={{ display: 'flex', gap: '1rem' }}>
-            <select value={conservacao} onChange={e => setConservacao(e.target.value)} style={{ flex: 1 }}>
+            <select value={conservacao} onChange={(e) => setConservacao(e.target.value)} className="field-control field-control--select" style={{ flex: 1 }}>
               <option value="Novo">Novo</option>
               <option value="Bom">Bom</option>
               <option value="Regular">Regular</option>
               <option value="Marcas de uso">Marcas de uso</option>
             </select>
 
-            <select value={modalidade} onChange={e => setModalidade(e.target.value)} style={{ flex: 1 }}>
+            <select value={modalidade} onChange={(e) => setModalidade(e.target.value)} className="field-control field-control--select" style={{ flex: 1 }}>
               <option value="Venda">Venda</option>
               <option value="Troca">Troca</option>
               <option value="Ambos">Ambos (Venda e Troca)</option>
@@ -158,61 +223,66 @@ export function Garagem() {
           </div>
 
           <div style={{ display: 'flex', gap: '1rem' }}>
-            <input type="url" placeholder="URL da foto do item" value={foto} onChange={e => setFoto(e.target.value)} style={{ flex: 2 }} />
-            <input type="number" placeholder="Valor em VATs" required value={vats} onChange={e => setVats(e.target.value)} style={{ flex: 1 }} />
+            <input type="url" placeholder="URL da foto do item" value={foto} onChange={(e) => setFoto(e.target.value)} className="field-control" style={{ flex: 2 }} />
+            <input type="number" placeholder="Valor em VATs" required value={vats} onChange={(e) => setVats(e.target.value)} className="field-control" style={{ flex: 1 }} />
           </div>
 
-          <div>
+          <div style={{ display: 'flex', gap: '1rem' }}>
             <button type="submit" style={{ padding: '0.6rem 2rem', cursor: 'pointer', background: '#28a745', color: '#fff', border: 'none', borderRadius: '4px' }}>
               {idEdicao ? 'Atualizar' : 'Publicar Peça'}
             </button>
-            {idEdicao && <button type="button" onClick={limparFormulario} style={{ marginLeft: '1rem' }}>Cancelar</button>}
+            {idEdicao && <button type="button" onClick={limparFormulario} style={{ padding: '0.6rem 2rem', cursor: 'pointer', background: '#d1d1d1', color: '#3c3c3c', border: 'none', borderRadius: '4px' }}>Cancelar</button>}
           </div>
         </form>
       </div>
 
-      {['Disponível', 'Negociação', 'Trocado/Vendido'].map((aba) => (
-        <div key={aba} style={{ marginBottom: '2.5rem' }}>
-          <h3 style={{ borderBottom: '2px solid #333', paddingBottom: '0.5rem' }}>
-            Lista: {aba} ({meusAnuncios.filter(a => a.status === aba).length})
-          </h3>
-          
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
-            {meusAnuncios.filter(a => a.status === aba).length === 0 ? (
-              <p style={{ color: '#888', fontStyle: 'italic' }}>Nenhum item nesta lista.</p>
-            ) : (
-              meusAnuncios.filter(a => a.status === aba).map((anuncio) => (
-                <div key={anuncio.id} style={{ border: '1px solid #ccc', padding: '1rem', borderRadius: '6px', width: '220px', background: '#fff' }}>
-                  <img src={anuncio.foto} alt={anuncio.titulo} style={{ width: '100%', height: '150px', objectFit: 'cover' }} onError={(e) => { e.target.src = 'https://via.placeholder.com/300?text=Erro+Imagem'; }} />
-                  <h4 style={{ margin: '0.5rem 0 0.2rem 0' }}>{anuncio.titulo}</h4>
-                  <p style={{ fontSize: '0.85rem', color: '#555', margin: 0 }}>Tam: {anuncio.tamanho} | {anuncio.conservacao}</p>
-                  <p style={{ fontWeight: 'bold', color: '#0056b3', margin: '0.3rem 0' }}>{anuncio.vats} VATs</p>
-                  
+      {secoes.map((secao) => {
+        const itensDaAba = meusAnuncios.filter(secao.filtro);
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', marginTop: '10px' }}>
-                    {anuncio.status === 'Disponível' && (
-                      <button onClick={() => handleIniciarEdicao(anuncio)} style={{ fontSize: '0.8rem', cursor: 'pointer' }}>Editar Peça</button>
-                    )}
-                    
+        return (
+          <div key={secao.titulo} style={{ marginBottom: '2.5rem' }}>
+            <h3 style={{ borderBottom: '2px solid #333', paddingBottom: '0.5rem' }}>
+              Lista: {secao.titulo} ({itensDaAba.length})
+            </h3>
 
-                    <select 
-                      value={anuncio.status} 
-                      onChange={(e) => handleMudarStatus(anuncio.id, e.target.value)}
-                      style={{ fontSize: '0.8rem', padding: '2px' }}
-                    >
-                      <option value="Disponível">Mover p/ Disponível</option>
-                      <option value="Negociação">Mover p/ Negociação</option>
-                      <option value="Trocado/Vendido">Mover p/ Trocado/Vendido</option>
-                    </select>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
+              {itensDaAba.length === 0 ? (
+                <p style={{ color: '#888', fontStyle: 'italic' }}>Nenhum item nesta lista.</p>
+              ) : (
+                itensDaAba.map((anuncio) => (
+                  <div key={anuncio.id} style={{ width: '260px' }}>
+                    <AnuncioCard anuncio={anuncio} onClickDetalhe={(id) => navigate(`/anuncio/${id}`)} />
 
-                    <button onClick={() => handleExcluirAnuncio(anuncio.id)} style={{ fontSize: '0.8rem', color: 'red', cursor: 'pointer' }}>Excluir</button>
+                    <div className="garage-actions">
+                      {normalizarStatus(anuncio.status) === STATUS.DISPONIVEL && (
+                        <button onClick={() => handleIniciarEdicao(anuncio)} className="garage-action-button garage-action-button--edit">
+                          Editar Peça
+                        </button>
+                      )}
+
+                      <select
+                        value={normalizarStatus(anuncio.status)}
+                        onChange={(e) => handleMudarStatus(anuncio.id, e.target.value)}
+                        className="garage-status-select"
+                      >
+                        {statusDisponiveis.map((status) => (
+                          <option key={status} value={status}>
+                            Mover p/ {STATUS_LABELS[status]}
+                          </option>
+                        ))}
+                      </select>
+
+                      <button onClick={() => handleExcluirAnuncio(anuncio.id)} className="garage-action-button garage-action-button--danger">
+                        Excluir
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))
-            )}
+                ))
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

@@ -1,19 +1,24 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
 
+const removerCamposDerivados = (usuario) => {
+  if (!usuario) return usuario;
+
+  const { mediaAvaliacoes, totalNegociacoes, saldoVats, ...resto } = usuario;
+
+  if (typeof resto.vats !== 'number' && typeof saldoVats === 'number') {
+    resto.vats = saldoVats;
+  }
+
+  return resto;
+};
+
 export function AuthProvider({ children }) {
-  const [usuarioLogado, setUsuarioLogado] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-
-  useEffect(() => {
+  const [usuarioLogado, setUsuarioLogado] = useState(() => {
     const usuarioSalvo = localStorage.getItem('usuarioLogado');
-    if (usuarioSalvo) {
-      setUsuarioLogado(JSON.parse(usuarioSalvo));
-    }
-    setLoading(false);
-  }, []);
+    return usuarioSalvo ? removerCamposDerivados(JSON.parse(usuarioSalvo)) : null;
+  });
 
 
   const login = (email, senha) => {
@@ -21,8 +26,9 @@ export function AuthProvider({ children }) {
     const usuarioEncontrado = usuariosSalvos.find(u => u.email === email && u.senha === senha);
 
     if (usuarioEncontrado) {
-      localStorage.setItem('usuarioLogado', JSON.stringify(usuarioEncontrado));
-      setUsuarioLogado(usuarioEncontrado);
+      const usuarioSanitizado = removerCamposDerivados(usuarioEncontrado);
+      localStorage.setItem('usuarioLogado', JSON.stringify(usuarioSanitizado));
+      setUsuarioLogado(usuarioSanitizado);
       return true;
     }
     return false;
@@ -36,22 +42,38 @@ export function AuthProvider({ children }) {
       return false;
     }
 
-  const novoUsuario = {
-    id: `usr_${crypto.randomUUID().substring(0, 8)}`, 
-    nome: dadosUsuario.nome,
-    email: dadosUsuario.email,
-    senha: dadosUsuario.senha,
-    telefone: dadosUsuario.telefone,
-    endereco: dadosUsuario.endereco,
-    avatar: dadosUsuario.avatar || null,
-    vats: 100, 
-    mediaAvaliacoes: 0,
-    totalNegociacoes: 0,
-    criadoEm: new Date().toISOString()
-  };
+    const novoUsuario = {
+      id: `usr_${crypto.randomUUID().substring(0, 8)}`,
+      nome: dadosUsuario.nome,
+      email: dadosUsuario.email,
+      senha: dadosUsuario.senha,
+      telefone: dadosUsuario.telefone,
+      endereco: dadosUsuario.endereco,
+      avatar: dadosUsuario.avatar || null,
+      vats: 100,
+      criadoEm: new Date().toISOString()
+    };
 
     usuariosSalvos.push(novoUsuario);
     localStorage.setItem('usuarios', JSON.stringify(usuariosSalvos));
+    return true;
+  };
+
+  const updateProfile = (id, updates) => {
+    const usuariosSalvos = JSON.parse(localStorage.getItem('usuarios') || '[]');
+    const index = usuariosSalvos.findIndex(u => u.id === id);
+    if (index === -1) return false;
+
+    const atualizado = removerCamposDerivados({ ...usuariosSalvos[index], ...updates });
+    usuariosSalvos[index] = atualizado;
+    localStorage.setItem('usuarios', JSON.stringify(usuariosSalvos));
+
+    if (usuarioLogado && usuarioLogado.id === id) {
+      const merged = removerCamposDerivados({ ...usuarioLogado, ...updates });
+      localStorage.setItem('usuarioLogado', JSON.stringify(merged));
+      setUsuarioLogado(merged);
+    }
+
     return true;
   };
 
@@ -62,13 +84,14 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ usuarioLogado, login, cadastrar, logout }}>
-      {!loading && children}
+    <AuthContext.Provider value={{ usuarioLogado, login, cadastrar, updateProfile, logout }}>
+      {children}
     </AuthContext.Provider>
   );
 }
 
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   return useContext(AuthContext);
 }

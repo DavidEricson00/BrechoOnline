@@ -8,6 +8,8 @@ import { Perfil } from '../pages/Perfil';
 import { DetalheAnuncio } from '../pages/DetalheAnuncio';
 import { Negociacoes } from '../pages/Negociacoes';
 import { ProtectedRoute } from '../components/ProtectedRoute';
+import { Deposito } from '../pages/Deposito'
+import { Saque } from '../pages/Saque'
 
 export function AppRoutes() {
   return (
@@ -29,6 +31,15 @@ export function AppRoutes() {
           <Route path="minhas-negociacoes" element={
             <ProtectedRoute><Negociacoes /></ProtectedRoute>
           } />
+
+          <Route path="deposito" element={
+            <ProtectedRoute><Deposito /></ProtectedRoute>
+          }/>
+          <Route path="saque" element={
+            <ProtectedRoute><Saque /></ProtectedRoute>
+          }/>
+
+          
         </Route>
       </Routes>
     </BrowserRouter>

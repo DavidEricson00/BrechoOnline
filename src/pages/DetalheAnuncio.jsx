@@ -1,58 +1,72 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+//import { anunciosMock } from '../mocks/anuncios';
 
 export function DetalheAnuncio() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { usuarioLogado } = useAuth();
-  const [anuncio, setAnuncio] = useState(null);
+  const anunciosSalvos = useMemo(() => JSON.parse(localStorage.getItem('anuncios') || '[]'), []);
+  const anuncio = useMemo(() => {
+    return (
+      [...anunciosSalvos].find((item) => item.id === id) || {
+        id: null
+      }
+    );
+  }, [anunciosSalvos, id]);
 
+  if (!anuncio?.id) {
+    return (
+      <div className="page-stack">
+        <div className="page-card page-card--narrow" style={{ textAlign: 'center' }}>
+          <h2 className="page-title" style={{ fontSize: '1.7rem' }}>Anúncio não encontrado</h2>
+          <p className="page-subtitle" style={{ marginBottom: '1.5rem' }}>
+            Esse anúncio não existe mais ou foi removido.
+          </p>
+          <button
+            onClick={() => navigate(-1)}
+            style={{ padding: '0.7rem 1.2rem', background: '#0f172a', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}
+          >
+            Voltar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
-  useEffect(() => {
+  const valorVat = anuncio.vats ?? anuncio.precoVats ?? 0;
+  const donoId = anuncio.donoId ?? anuncio.usuarioId ?? '';
+  const donoNome = anuncio.donoNome ?? 'Usuário da plataforma';
+  const modalidade = anuncio.modalidade ?? 'Venda';
+  const categoria = anuncio.categoria ?? 'Não informado';
+  const tamanho = anuncio.tamanho ?? 'Não informado';
+  const conservacao = anuncio.conservacao ?? 'Não informado';
+  const podeVender = modalidade === 'Venda' || modalidade === 'Ambos';
+  const podeTrocar = modalidade === 'Troca' || modalidade === 'Ambos';
 
-    const anunciosSalvos = JSON.parse(localStorage.getItem('anunciosGaragem') || '[]');
-    const itemEncontrado = anunciosSalvos.find(item => item.id === id);
-
-    if (itemEncontrado) {
-      setAnuncio(itemEncontrado);
-    } else {
-
-      setAnuncio({
-        id: id,
-        titulo: 'Tênis Running Casual',
-        descricao: 'Tênis em ótimo estado, usado poucas vezes. Perfeito para o dia a dia.',
-        precoVats: 150,
-        donoId: 'outro-usuario-id',
-        donoNome: 'Ana Silva',
-        foto: 'https://via.placeholder.com/300?text=Tenis+Casual'
-      });
-    }
-  }, [id]);
-
-  const handleFazerProposta = () => {
+  const salvarProposta = (tipoProposta) => {
     if (!usuarioLogado) {
       alert('Você precisa estar logado para fazer uma proposta!');
       navigate('/login');
       return;
     }
 
-    if (anuncio.donoId === usuarioLogado.id) {
+    if (donoId === usuarioLogado.id) {
       alert('Você não pode fazer uma proposta no seu próprio desapego!');
       return;
     }
 
-
     const negociacoesAtuais = JSON.parse(localStorage.getItem('negociacoes') || '[]');
-    
     const novaProposta = {
       id: crypto.randomUUID(),
       anuncioId: anuncio.id,
       tituloAnuncio: anuncio.titulo,
-      precoOriginal: anuncio.precoVats,
+      tipoProposta,
+      precoOriginal: valorVat,
       compradorId: usuarioLogado.id,
       compradorNome: usuarioLogado.nome,
-      vendedorId: anuncio.donoId,
+      vendedorId: donoId,
       status: 'ABERTA'
     };
 
@@ -63,31 +77,91 @@ export function DetalheAnuncio() {
     navigate('/minhas-negociacoes');
   };
 
-  if (!anuncio) return <p style={{ textAlign: 'center', padding: '2rem' }}>Carregando desapego...</p>;
+  const handleEditar = () => {
+    localStorage.setItem('editarAnuncioId', anuncio.id);
+    navigate('/garagem');
+  };
+
+  const handleExcluir = () => {
+    if (!window.confirm('Tem certeza que deseja excluir este anúncio?')) {
+      return;
+    }
+
+    const anunciosAtualizados = anunciosSalvos.filter((item) => item.id !== anuncio.id);
+    localStorage.setItem('anuncios', JSON.stringify(anunciosAtualizados));
+    navigate('/garagem');
+  };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '2rem auto', padding: '1.5rem', background: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-      <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: '#fc9003', cursor: 'pointer', fontWeight: 'bold', marginBottom: '1rem' }}>
-        ← Voltar
-      </button>
-      
-      <img src={anuncio.foto} alt={anuncio.titulo} style={{ width: '100%', height: '300px', objectFit: 'cover', borderRadius: '8px' }} />
-      
-      <h2 style={{ marginTop: '1rem', color: '#333' }}>{anuncio.titulo}</h2>
-      <p style={{ color: '#666', fontSize: '0.9rem' }}>Desapego de: <strong>{anuncio.donoNome}</strong></p>
-      
-      <div style={{ margin: '1rem 0', padding: '0.8rem', background: 'rgba(252, 144, 3, 0.1)', borderRadius: '4px', display: 'inline-block' }}>
-        <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#fc9003' }}>{anuncio.precoVats} VATs</span>
+    <div className="page-stack">
+      <div className="page-card page-card--wide" style={{ maxWidth: '760px', margin: '0 auto' }}>
+        <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: '#fc9003', cursor: 'pointer', fontWeight: 700, marginBottom: '1rem' }}>
+          ← Voltar
+        </button>
+
+        <img src={anuncio.foto} alt={anuncio.titulo} style={{ width: '100%', height: '360px', objectFit: 'cover', borderRadius: '12px' }} />
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap' }}>
+          <div>
+            <h2 className="page-title" style={{ fontSize: '1.8rem', marginBottom: '0.4rem' }}>{anuncio.titulo}</h2>
+            <p className="page-subtitle">Desapego de: <strong>{donoNome}</strong></p>
+          </div>
+
+          <div className="vats-badge" style={{ fontSize: '1rem' }}>{valorVat} VATs</div>
+        </div>
+
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginTop: '1rem' }}>
+          {[
+            ['Categoria', categoria],
+            ['Tamanho', tamanho],
+            ['Conservação', conservacao],
+            ['Modalidade', modalidade]
+          ].map(([label, value]) => (
+            <div key={label} style={{ padding: '0.7rem 0.9rem', borderRadius: '999px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#0f172a', fontSize: '0.92rem' }}>
+              <strong style={{ marginRight: '0.35rem' }}>{label}:</strong>{value}
+            </div>
+          ))}
+        </div>
+
+        <p style={{ lineHeight: '1.7', color: '#334155', margin: '1.25rem 0 1.5rem' }}>{anuncio.descricao}</p>
+
+        {usuarioLogado?.id !== donoId ? (
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+            {podeVender && (
+              <button
+                onClick={() => salvarProposta('COMPRA')}
+                style={{ flex: '1 1 220px', padding: '0.9rem 1.1rem', background: '#0f172a', color: '#fff', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: 700, cursor: 'pointer' }}
+              >
+                Propor compra
+              </button>
+            )}
+
+            {podeTrocar && (
+              <button
+                onClick={() => salvarProposta('TROCA')}
+                style={{ flex: '1 1 220px', padding: '0.9rem 1.1rem', background: '#fc9003', color: '#fff', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: 700, cursor: 'pointer' }}
+              >
+                Propor troca
+              </button>
+            )}
+          </div>
+        ) : (
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <button
+              onClick={handleEditar}
+              style={{ flex: '1 1 180px', padding: '0.9rem 1.1rem', background: '#0f172a', color: '#fff', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: 700, cursor: 'pointer' }}
+            >
+              Editar
+            </button>
+            <button
+              onClick={handleExcluir}
+              style={{ flex: '1 1 180px', padding: '0.9rem 1.1rem', background: '#dc2626', color: '#fff', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: 700, cursor: 'pointer' }}
+            >
+              Excluir
+            </button>
+          </div>
+        )}
       </div>
-
-      <p style={{ lineHeight: '1.6', color: '#444', margin: '1rem 0' }}>{anuncio.descricao}</p>
-
-      <button 
-        onClick={handleFazerProposta}
-        style={{ width: '100%', padding: '0.8rem', background: '#fc9003', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer' }}
-      >
-        Intercambiar
-      </button>
     </div>
   );
 }
