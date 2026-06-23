@@ -1,114 +1,166 @@
-# 👗 Brechó Online — Negociação e Troca
+# Brechó Online - Negociação e Troca
 
-Projeto Final da disciplina de Desenvolvimento Web I — IFCE  
-Desenvolvimento de um sistema de brechó online com suporte a venda, troca e negociação entre usuários.
+## Integrantes
 
----
+* **David Ericson de Oliveira Biserra**
+* **Roberto Carlos dos Santos de Melo Junior**
+* **Suyane Oliveira da Silva**
+* **Pedro Ygor Beserra Pereira**
+* **João Marcos Francelino Macedo**
 
-## 📋 Descrição do Sistema
+* **Curso:** Bacharelado em Sistemas de Informação
+* **Instituição:** Instituto Federal de Educação, Ciência e Tecnologia do Ceará (IFCE)
+* **Disciplina:** Desenvolvimento Web I
 
-Plataforma front-end de brechó online que permite anunciar, comprar e trocar roupas usadas.  
-O sistema conta com moeda virtual (VATs), sistema de propostas e contrapropostas, chat temporário,  
-garagem virtual e avaliação entre usuários. Todos os dados são persistidos via **localStorage**.
+## Descrição do Sistema
 
----
+O **Brechó Online** é uma aplicação web *Single Page Application* (SPA) desenvolvida com a biblioteca **React**. O sistema simula de forma integral uma plataforma de economia circular focada na compra, venda e troca de roupas e acessórios seminovos ou usados. 
 
-## 🚀 Tecnologias Utilizadas
+Com o intuito de incentivar o consumo sustentável e a reutilização de peças de vestuário, o sistema introduz um conceito de moeda virtual chamada **VAT**. Essa moeda virtual atua como o facilitador financeiro dentro da plataforma, permitindo transações de compra direta ou servindo como complemento financeiro nas trocas de itens.
 
-- React
-- localStorage / JSON Server (simulação de API)
-- Git + GitHub
+O projeto foi concebido inteiramente no modelo *client-side* (front-end), dispensando uma infraestrutura de back-end ativa. Toda a lógica de negócios, gerenciamento de estado das sessões, fluxo de mensagens, controle das negociações bilaterais e regras de transação financeira são processados no navegador do usuário, com a persistência contínua dos dados sendo mantida por meio do mecanismo de armazenamento local (**localStorage**).
 
----
+## Funcionalidades Implementadas
 
-## ⚙️ Instalação e Execução
+### Funcionalidades Obrigatórias
+
+- [x] Cadastro de usuários
+- [x] Login e autenticação simulada
+- [x] Persistência do usuário logado
+- [x] Perfil com nome, e-mail, telefone, endereço e avatar
+- [x] Proteção de rotas para usuários autenticados
+
+- [x] Cadastro de anúncios
+- [x] Edição de anúncios
+- [x] Exclusão de anúncios
+- [x] Listagem pública de anúncios
+- [x] Busca por título e descrição
+- [x] Filtros por categoria
+- [x] Filtros por tamanho
+- [x] Filtros por modalidade de negociação
+- [x] Filtros por faixa de VATs
+- [x] Ordenação por valor e data
+
+- [x] Sistema de moeda virtual VAT
+- [x] Visualização de saldo de VATs
+- [x] Compra simulada de VATs
+- [x] Saque simulado de VATs
+
+- [x] Envio de propostas para compra
+- [x] Envio de propostas para troca
+- [x] Envio de contrapropostas
+- [x] Aceitação de propostas
+- [x] Recusa de propostas
+- [x] Histórico de negociações em linha do tempo
+
+- [x] Central de negociações
+- [x] Controle de status das negociações
+
+- [x] Chat temporário após aceitação da proposta
+- [x] Envio de mensagens entre usuários
+- [x] Encerramento da negociação
+- [x] Expiração do chat após 7 dias
+
+- [x] Garagem virtual
+- [x] Lista de itens disponíveis
+- [x] Lista de itens em negociação
+- [x] Histórico de itens vendidos ou trocados
+- [x] Alteração manual de status dos anúncios
+
+- [x] Avaliação pós-negociação
+- [x] Nota de 1 a 10 estrelas
+- [x] Comentário opcional
+- [x] Exibição da média de avaliações
+- [x] Exibição do total de negociações concluídas
+
+- [x] Interface responsiva para desktop e dispositivos móveis
+
+### Funcionalidades Opcionais
+
+- [ ] Selos de confiabilidade
+- [ ] Carrinho de troca múltipla
+- [ ] Modo escuro persistente
+- [ ] Animações suaves
+- [ ] Gráfico de evolução de VATs ou negociações
+
+## Instalação
+
+Siga as etapas abaixo para preparar o ambiente de desenvolvimento local:
+
+1. Certifique-se de possuir o [Node.js](https://nodejs.org/) instalado em sua máquina.
+2. Extraia os arquivos do projeto ou clone o repositório.
+3. Abra o terminal na pasta raiz do projeto.
+4. Execute o comando a seguir para instalar todas as dependências mapeadas no arquivo `package.json`:
 
 ```bash
-# Clone o repositório
-git clone https://github.com/DavidEricson00/Brecho-Oline.git
-
-# Acesse a pasta
-cd Brecho-Oline
-
-# Instale as dependências
 npm install
-
-# Inicie o projeto
-npm start
 ```
 
----
 
-## ✅ Funcionalidades Obrigatórias
+## Execução
 
-- [ ] **Autenticação simulada** — Cadastro e login com persistência no localStorage; perfil com nome, e-mail, telefone, endereço e avatar
-- [ ] **Cadastro e listagem de anúncios** — Formulário completo com título, descrição, categoria, tamanho, estado de conservação, foto, modalidade (Venda / Troca / Ambos) e valor em VATs
-- [ ] **Filtros e busca** — Filtragem por categoria, tamanho, modalidade e faixa de preço; busca por texto
-- [ ] **Moeda virtual VAT** — Saldo por usuário, compra de VATs, validação de equivalência em trocas (tolerância de 20%), conversão de VATs em dinheiro
-- [ ] **Sistema de propostas e negociação** — Envio de proposta, aceite, recusa e contraproposta; histórico em linha do tempo
-- [ ] **Chat temporário** — Criado após proposta aceita; disponível por 7 dias; botão para encerrar negociação
-- [ ] **Garagem Virtual** — Três listas por usuário: Disponível, Em Negociação e Trocado/Vendido; movimentação manual entre listas
-- [ ] **Avaliação pós-negociação** — Nota de 1 a 10 estrelas + comentário opcional; exibição de média e total de negociações no perfil
-- [ ] **Layout responsivo** — Compatível com desktop (1024px+) e mobile (375px+); menu de navegação completo
+Após a conclusão da instalação das dependências, inicie o servidor de desenvolvimento local utilizando o script configurado para o **Vite**:
 
----
+```bash
+npm run dev
+```
 
-## ⭐ Funcionalidades Opcionais (Diferenciais)
+O terminal exibirá a URL local gerada (geralmente `http://localhost:5173`). Abra o endereço no navegador de sua preferência para interagir com o sistema.
 
-- [ ] Selos de confiabilidade baseados em avaliações e tempo de cadastro
-- [ ] Carrinho de troca múltipla (2+ peças por 2+ peças)
-- [ ] Modo escuro persistente no localStorage
-- [ ] Animações e transições suaves
-- [ ] Gráfico de evolução do saldo de VATs ou número de negociações
 
----
+## Screenshots
 
-## 🗂️ Estrutura de Dados (localStorage)
+*(Os caminhos abaixo são placeholders que deverão ser atualizados com as capturas de tela finais do sistema)*
 
-| Chave           | Conteúdo                              |
-|-----------------|---------------------------------------|
-| `usuarios`      | Lista de usuários cadastrados         |
-| `usuarioLogado` | Usuário da sessão atual               |
-| `anuncios`      | Todos os anúncios criados             |
-| `propostas`     | Histórico de propostas e negociações  |
-| `chats`         | Mensagens dos chats temporários       |
-| `avaliacoes`    | Avaliações pós-negociação             |
+#### 1. Página Inicial — Armário de Desapegos
+![Home com Lista de Anúncios e Filtros](placeholder_home.png)
 
----
+#### 2. Detalhes do Anúncio e Propostas
+![Detalhes do Item e Formulário de Ofertas](placeholder_detalhes.png)
 
-## 💱 Como Funciona a Moeda VAT
+#### 3. Minha Garagem Virtual
+![Garagem com Gerenciamento de Anúncios](placeholder_garagem.png)
 
-- Todo usuário começa com **0 VATs**
-- VATs podem ser comprados com dinheiro real (simulado)
-- Cada anúncio tem um valor em VATs definido pelo dono
-- Em trocas, o sistema verifica se os valores são equivalentes (diferença máxima de 20%)
-- Se houver diferença, o sistema sugere complementar com outras peças ou VATs
-- VATs podem ser convertidos de volta em dinheiro
+#### 4. Painel de Negociações
+![Central de Acompanhamento de Transações](placeholder_negociacoes.png)
 
----
+#### 5. Sala de Chat da Negociação
+![Chat de Mensagens entre Usuários](placeholder_chat.png)
 
-## 🔄 Fluxo de Uso
+#### 6. Perfil do Usuário e Carteira VAT
+![Perfil com Saldo de VATs e Estatísticas](placeholder_perfil.png)
 
-1. Usuário se cadastra e cria anúncio com valor em VATs
-2. Outro usuário encontra o anúncio e envia uma proposta (valor ou peças para troca)
-3. O anunciante aceita, recusa ou faz uma contraproposta
-4. Após aceite, um chat temporário é criado para combinar a entrega
-5. Ao concluir, ambos avaliam um ao outro e os VATs são transferidos
 
----
+## Dificuldades Encontradas
 
-## 📱 Telas Principais
+O desenvolvimento desta plataforma impôs diversos desafios técnicos devido à complexidade das regras de negócio aliada à ausência de uma camada de back-end real:
 
-- Tela de Login / Cadastro
-- Home / Explorar Anúncios
-- Detalhe do Anúncio
-- Criar / Editar Anúncio
-- Minhas Negociações
-- Chat da Negociação
-- Garagem Virtual
-- Perfil do Usuário
+* **Emulação da Arquitetura sem Back-End:** Projetar e organizar uma lógica fluida de sistema web complexo simulando respostas de API, atualizações em tempo real e conexões assíncronas apenas manipulando estados locais no navegador.
+* **Modelagem Relacional de Dados Não Estruturados:** Estabelecer a consistência referencial (ex: vincular mensagens do chat, propostas de peças, avaliações e transações financeiras aos respectivos IDs de usuários e anúncios) operando exclusivamente com matrizes JSON simples no `localStorage`.
+* **Sincronização de Estados das Propostas e Contrapropostas:** Desenvolver um fluxo alternado de interações (comprador envia oferta, vendedor contrapropõe, comprador aceita) controlando permissões de edição e garantindo que o status de ambas as partes permaneça idêntico e consistente.
+* **Integridade das Transações com Concorrência Simulada:** Evitar problemas lógicos de integridade de dados (como garantir que uma peça usada como moeda de troca em uma proposta aceita mude seu status global para `trocado` e desapareça de outras buscas, e validar o saldo de VATs do comprador no exato momento da conclusão da transação).
+* **Ciclo de Vida e Controle de Estados de Anúncios:** Coordenar a transição segura dos status dos anúncios (`disponivel`, `em_negociacao`, `vendido`, `trocado`) a partir de eventos gerados em diferentes pontos do aplicativo (Garagem, Detalhes, Negociações ou Chat).
+* **Processamento e Otimização de Consultas Client-side:** Criar algoritmos eficientes em JavaScript para realizar filtragens combinadas multicritério, buscas textuais tolerantes com remoção de diacríticos e ordenação sob demanda sem recorrer a consultas de banco de dados estruturado (SQL/NoSQL).
+* **Escalabilidade de Componentes React:** Organizar componentes de forma reutilizável e desacoplada (como o `AnuncioCard` e modais reutilizáveis), otimizando a propagação de estados a fim de evitar re-renderizações desnecessárias e manter a performance da interface reativa.
+* **Garantia de Responsividade:** Ajustar o design visual desenvolvido em Vanilla CSS para comportar de maneira polida e limpa layouts ricos e cheios de detalhes (como a interface dividida de Chat e Negociações) tanto em telas de dispositivos móveis quanto em computadores desktop.
 
-## 📬 Entrega
 
-Enviar para: **samuel.araujo@ifce.edu.br**  
-Incluir: link do repositório + vídeo de apresentação (3 a 5 minutos)
+## Soluções Adotadas
+
+A equipe superou os desafios descritos implementando as seguintes soluções de engenharia de software:
+
+* **Gerenciador de Sessão com Context API:** A criação do `AuthContext` permitiu unificar e prover informações do usuário logado de forma limpa por toda a árvore de componentes da aplicação, agilizando consultas de permissões e sincronização do saldo de VATs.
+* **Sanitização de Consultas e Normalização Textual:** Implementação do método `normalize('NFD').replace(/\p{Diacritic}/gu, '')` e conversão para caixa baixa nas chaves de busca da página principal. Isso garante que buscas por termos com acentos ou variações de maiúsculas encontrem os anúncios corretamente na memória do navegador.
+* **Manipulação Atomizada do LocalStorage:** Centralização de escritas e leituras do armazenamento local através de funções de apoio, garantindo conversão JSON segura, limpeza de estados obsoletos e recarregamento coordenado para atualizar os estados visuais dos componentes React.
+* **Cálculo de Estatísticas Dinâmicas com Memoization:** Emprego do hook `useMemo` nas páginas de Perfil e Negociações para processar agregações em tempo real (como a média das avaliações e negociações finalizadas) apenas quando os dados de origem sofrerem alterações, preservando a performance da renderização.
+* **Validação de Transações de Moeda Virtual (VAT) na Conclusão:** Lógica de processamento de transações que realiza uma dupla checagem na finalização do negócio. O sistema debita o valor apenas após verificar que o comprador possui saldo disponível e altera as peças ofertadas em troca simultaneamente no array de anúncios no `localStorage`.
+* **Expirabilidade de Negociações no Chat:** Implementação de controle temporal de ciclos de vida no chat. Ao concluir ou cancelar um negócio, o sistema adiciona uma data limite (`expiradoEm`) somando sete dias ao horário atual. Os componentes de rota e renderização de chat validam essa propriedade contra o timestamp atual do sistema para bloquear o acesso de forma segura e transparente.
+
+
+## Considerações Finais
+
+A idealização e o desenvolvimento do **Brechó Online com Negociação e Troca** consolidou conhecimentos valiosos a respeito do desenvolvimento de aplicações *Single Page* dinâmicas utilizando **React**. 
+
+A necessidade de projetar todas as regras de negócio e a persistência no lado do cliente forçou a equipe a aprofundar-se em tópicos cruciais da computação web, tais como gerenciamento de estados reativos, manipulação avançada de arrays de dados, otimização de renderização e integridade transacional simulada. 
+
+Além do aspecto puramente técnico, a concepção do produto forneceu uma perspectiva realista sobre os desafios de experiência de usuário (UX) em ecossistemas colaborativos e de trocas diretas. O projeto demonstra a viabilidade de desenvolver protótipos de alta fidelidade e interfaces funcionais ricas que validam conceitos complexos de forma independente de serviços de servidor.
