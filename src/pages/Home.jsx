@@ -14,6 +14,8 @@ const ordenacoes = [
   { value: 'recentes', label: 'Mais recentes' }
 ];
 
+const anunciosStorage = JSON.parse(localStorage.getItem("anuncios"));
+
 function normalizarStatus(status) {
   if (!status) return '';
   const s = status.toLowerCase();
@@ -45,9 +47,74 @@ function ordenarAnuncios(anuncios, ordenacao) {
   return lista.sort((a, b) => new Date(b.criadoEm) - new Date(a.criadoEm));
 }
 
+import imgJaqueta from "../assets/jaqueta.webp";
+import imgTenis from "../assets/tenis.jpeg";
+import imgCamiseta from "../assets/camiseta_rock.jpg";
+import imgOculos from "../assets/oculos.webp";
+
 export function Home() {
   const navigate = useNavigate();
   const { usuarioLogado } = useAuth();
+
+  const [anuncios] = useState(anunciosStorage || [
+    {
+      id: "anc_mock1",
+      usuarioId: "usr_outro",
+      titulo: "Jaqueta Jeans Vintage",
+      descricao: "Pouco uso, sem manchas e com todos os botões originais.",
+      categoria: "casaco",
+      tamanho: "M",
+      conservacao: "Bom",
+      foto: imgJaqueta, 
+      modalidade: "Ambos",
+      vats: 35,
+      status: "disponivel",
+      criadoEm: new Date().toISOString()
+    },
+    {
+      id: "anc_mock2",
+      usuarioId: "usr_outro2",
+      titulo: "Tênis Air Casual",
+      descricao: "Perfeito estado, higienizado e pronto para uso.",
+      categoria: "calcado",
+      tamanho: "40",
+      conservacao: "Novo",
+      foto: imgTenis, 
+      modalidade: "Venda",
+      vats: 120,
+      status: "disponivel",
+      criadoEm: new Date().toISOString()
+    },
+    {
+      id: "anc_mock3",
+      usuarioId: "usr_outro3",
+      titulo: "Camiseta Estampa Rock",
+      descricao: "Algodão 100%, estampa levemente desbotada estilo vintage.",
+      categoria: "camiseta",
+      tamanho: "G",
+      conservacao: "Bom",
+      foto: imgCamiseta, 
+      modalidade: "Troca",
+      vats: 25,
+      status: "disponivel",
+      criadoEm: new Date().toISOString()
+    },
+    {
+      id: "anc_mock4",
+      usuarioId: "usr_outro4",
+      titulo: "Óculos de Sol Retrô",
+      descricao: "Acompanha case de proteção, sem riscos nas lentes.",
+      categoria: "acessorio",
+      tamanho: "Único",
+      conservacao: "Excelente",
+      foto: imgOculos, 
+      modalidade: "Ambos",
+      vats: 50,
+      status: "disponivel",
+      criadoEm: new Date().toISOString()
+    }
+  ]);
+
   const [busca, setBusca] = useState('');
   const [categoria, setCategoria] = useState('');
   const [tamanho, setTamanho] = useState('');
@@ -58,10 +125,10 @@ export function Home() {
 
   const anunciosFiltrados = useMemo(() => {
     const local = localStorage.getItem("anuncios");
-    const anunciosStorage = (() => {
+    const listaParaFiltrar = (() => {
       if (!local) {
-        localStorage.setItem("anuncios", JSON.stringify(anunciosMock));
-        return anunciosMock;
+        localStorage.setItem("anuncios", JSON.stringify(anuncios));
+        return anuncios;
       }
       try {
         return JSON.parse(local) || [];
@@ -74,7 +141,7 @@ export function Home() {
     const min = extrairFaixa(vatMin);
     const max = extrairFaixa(vatMax);
 
-    const base = anunciosStorage.filter((anuncio) => {
+    const base = listaParaFiltrar.filter((anuncio) => {
       const statusNormalizado = normalizarStatus(anuncio.status);
       if (statusNormalizado !== 'disponivel' || (usuarioLogado?.id && anuncio.usuarioId === usuarioLogado.id)) return false;
 
@@ -94,7 +161,7 @@ export function Home() {
     });
 
     return ordenarAnuncios(base, ordenacao);
-  }, [busca, categoria, tamanho, modalidade, vatMin, vatMax, ordenacao, usuarioLogado]);
+  }, [anuncios, busca, categoria, tamanho, modalidade, vatMin, vatMax, ordenacao, usuarioLogado]);
 
   const limparFiltros = () => {
     setBusca('');
